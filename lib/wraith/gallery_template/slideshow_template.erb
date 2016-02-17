@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <title>Ghost // <%= location %></title>
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -109,7 +111,8 @@
   <script type="text/javascript">
     $(function() {
       $('.slideshow').cycle({
-        fx:     'cover',
+        fx:     'fade',
+        speed:  200,
         prev:   '.prev',
         next:   '.next',
         before: function (curr, next, opts) {
@@ -129,13 +132,13 @@
         var href = $(this).attr('href').substring(1);
 
         $('.slideshow').cycle($('.slide.'+href+':first').index());
-      })
+      });
 
       $('.shot').unbind().on('click', function(e){
         e.preventDefault();
         var url = $(this).attr('href');
         window.open(url,'_blank');
-      })
+      });
 
       $('.compare').unbind().on('click', function(){
         var slide = $(this).closest(".slide"),
@@ -148,7 +151,8 @@
         })
       })
     })
-</script>
+  </script>
+
 </head>
 <body>
   <div class="container">
@@ -156,12 +160,28 @@
       <div class="col-sm-12 col-md-3">
         <div class="panel">
           <div class="page-header">
+            <img src="http://www.wmdb.de/Assets/Images/logo-wmdb-systems_pos.svg" alt="WMDB Systems">
             <h4>List of screenshots for <%= location %> <small>taken <%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></small></h4>
           </div>
           <div class="panel-heading">Pages:</div>
-          <ul class="list-group list-group-flush">
-            <% directories.keys.each do |dir| %>
-            <li class="list-group-item"><a href="#<%=path%><%=dir%>"><span>/<%=dir.gsub('__', '/')%></span></a></li>
+          <ul class="list-group">
+            <% directories.each do |dir, sizes| %>
+            <% sizes.to_a.sort.each do |size, files| %>
+            <li class="list-group-item">
+              <a href="#<%=path%><%=dir%>">
+                <span class="text-left">/<%=dir.gsub('__', '/')%></span>
+                <% if threshold.nil? %>
+                <span class="text-left text-muted"><%=files[:data]%> % diff</span>
+                <% else %>
+                <% if files[:data] > threshold %>
+                <span class="text-left threshold"><%=files[:data]%> % diff</span>
+                <% else %>
+                <span class="text-left text-muted"><%=files[:data]%> % diff</span>
+                <% end %>
+                <% end %>
+              </a>
+            </li>
+            <% end %>
             <% end %>
           </ul>
         </div>
