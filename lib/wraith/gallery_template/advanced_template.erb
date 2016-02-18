@@ -14,22 +14,22 @@
       width: 100%;
     }
     .slideshow-container {
-      position: fixed;
-      width: 870px;
+      /*position: fixed;*/
+      /*width: 870px;*/
     }
 
     .slideshow {
-      height: 510px;
-      margin: 20px 0;
+      /*height: 510px;*/
+      /*margin: 20px 0;*/
     }
     .slide {
       background-color: #FFF !important;
-      width: 100% !important;
-      height: 510px !important;
+      /*width: 100% !important;*/
+      /*height: 510px !important;*/
     }
     .prev {
-      margin-left: -10px;
-      margin-right: 10px;
+      /*margin-left: -10px;*/
+      /*margin-right: 10px;*/
     }
     .next,
     .prev {
@@ -37,7 +37,11 @@
       background-color: #e7e7e7;
       border: 2px solid #eee;
       height: 400px;
-      margin-top: 60px;
+      /*margin-top: 60px;*/
+    }
+
+    .huge {
+      font-size: 40px;
     }
 
     .prev span:before,
@@ -147,6 +151,7 @@
         window.open(url,'_blank');
       });
 
+      // Compare button
       $('.compare').unbind().on('click', function(){
         var slide = $(this).closest(".slide"),
             newImage = slide.find('a.shot:eq(0)').attr('href'),
@@ -159,7 +164,7 @@
       });
 
       // Round Diff
-      var $badge = $('.badge');
+      var $badge = $('.list-group-item .badge');
       $($badge).each(function( index ) {
         var diffNumber = parseInt($(this).text());
         $(this).text(Math.round(diffNumber) + '%');
@@ -170,54 +175,146 @@
 
 </head>
 <body>
-  <div class="container">
-
-    <div class="row page-header">
-      <h1>List of screenshots for <small><%= location %></small></h1>
-    </div>
+  <div class="container-fluid">
 
     <div class="row">
-      <div class="col-sm-12 col-md-3">
-        <div class="panel">
-          <div class="page-header">
-            <img src="http://www.wmdb.de/Assets/Images/logo-wmdb-systems_pos.svg" alt="WMDB Systems">
-            <h4><small>taken <%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></small></h4>
-          </div>
+      <div class="col-sm-12">
+        <div class="page-header">
+          <h1>List of screenshots for <small><%= location %></small></h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <img src="http://www.wmdb.de/Assets/Images/logo-wmdb-systems_pos.svg" alt="WMDB Systems">
+      <h4><small>taken <%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></small></h4>
+    </div>
+
+    <!-- Status panels begin -->
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
           <div class="panel-heading">
-            <h3 class="panel-title">Pages:</h3>
+            <div class="row">
+              <div class="col-xs-3">
+                <i class="fa fa-files-o fa-5x"></i>
+              </div>
+              <div class="col-xs-9 text-right">
+                <div class="huge">26</div>
+                <h5>Total Pages</h5>
+              </div>
+            </div>
+          </div>
+          <a href="#">
+            <div class="panel-footer">
+              <span class="pull-left">View Details</span>
+              <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+              <div class="clearfix"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-3">
+                <i class="fa fa-check fa-5x"></i>
+              </div>
+              <div class="col-xs-9 text-right">
+                <div class="huge">12</div>
+                <h5>Success!</h5>
+              </div>
+            </div>
+          </div>
+          <a href="#">
+            <div class="panel-footer">
+              <span class="pull-left">View Details</span>
+              <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+              <div class="clearfix"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-3">
+                <i class="fa fa-info fa-5x"></i>
+              </div>
+              <div class="col-xs-9 text-right">
+                <div class="huge">124</div>
+                <h5>Warning!</h5>
+              </div>
+            </div>
+          </div>
+          <a href="#">
+            <div class="panel-footer">
+              <span class="pull-left">View Details</span>
+              <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+              <div class="clearfix"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-danger">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-3">
+                <i class="fa fa-times fa-5x"></i>
+              </div>
+              <div class="col-xs-9 text-right">
+                <div class="huge">13</div>
+                <h5>Failed!</h5>
+              </div>
+            </div>
+          </div>
+          <a href="#">
+            <div class="panel-footer">
+              <span class="pull-left">View Details</span>
+              <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+              <div class="clearfix"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- Status panels end -->
+
+
+    <div class="row">
+      <!-- Pages -->
+      <div class="col-sm-12 col-md-8">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Pages</h3>
           </div>
 
           <div class="list-group">
             <% directories.each do |dir, sizes| %>
             <% sizes.to_a.sort.each do |size, files| %>
 
-            <% if threshold.nil? %>
-            <a class="list-group-item list-group-item-success" href="#<%=path%><%=dir%>">
-              <span class="badge"><%=files[:data]%>%</span>
-              <span class="check-mark"></span>
-              <small><%=dir.gsub('__', '/')%></small>
-            </a>
-            <% else %>
             <% if files[:data] > threshold %>
             <a class="list-group-item list-group-item-danger" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data]%>%</span>
               <span class="check-mark"></span>
-              <small><%=dir.gsub('__', '/')%></small>
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% else %>
             <% if files[:data] < threshold and files[:data] != 0 %>
             <a class="list-group-item list-group-item-warning" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data]%>%</span>
               <span class="check-mark"></span>
-              <small><%=dir.gsub('__', '/')%></small>
+              <span class="glyphicon glyphicon-minus" aria-hidden="true"> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% else %>
             <a class="list-group-item list-group-item-success" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data]%>%</span>
               <span class="check-mark"></span>
-              <small><%=dir.gsub('__', '/')%></small>
+              <span class="glyphicon glyphicon-ok" aria-hidden="true"> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
-            <% end %>
             <% end %>
             <% end %>
 
@@ -227,58 +324,78 @@
 
         </div>
       </div>
-      <div class="col-sm-12 col-md-9">
-        <div class="slideshow-container">
-          <div class="prev col-sm-1"><span></span></div>
-          <div class="slideshow pull-left col-sm-10">
-            <% directories.each do |dir, sizes| %>
-            <% sizes.to_a.sort.each do |size, files| %>
-            <div class="row slide <%= dir %>">
-              <a class="path" name="<%= dir %>"></a>
-              <div class="col-sm-12 text-center">
-                <% if threshold.nil? %>
-                <h4><%=size%>px - <%= dir.gsub('__', '/') %></h4>
-                <% else %>
-                <% if files[:data] > threshold %>
-                <h4><%=size%>px - <%= dir.gsub('__', '/') %></h4>
-                <% else %>
-                <h4><%=size%>px - <%= dir.gsub('__', '/') %></h4>
-                <% end %>
-                <% end %>
-              </div>
-              <% files[:variants].each do |file| %>
-              <div class="col-sm-4">
-                <a class="shot" href="<%=file[:filename]%>">
-                  <img class="short-screenshot img-thumbnail" src="<%=path%><%=file[:thumb]%>">
-                </a>
-                <p class="text-center"><a target="_blank" href="<%=file[:url]%>"><%=file[:name]%></a></p>
-              </div>
-              <% end %>
-              <div class="col-sm-4">
-                <% if files[:diff] %>
-                <a class="shot" href="<%=files[:diff][:filename]%>">
-                  <img class="short-screenshot img-thumbnail" src="<%=path%><%=files[:diff][:thumb]%>">
-                </a>
-                <% end %>
-                <p class="text-center">diff</p>
-              </div>
-              <div class="difference col-sm-12">
-                <% if threshold.nil? %>
-                <h4 class="text-center text-muted"><%=files[:data]%> % different<span class="compare"></span></h4>
-                <% else %>
-                <% if files[:data] > threshold %>
-                <h4 class="text-center threshold"><%=files[:data]%> % different<span class="compare"></span></h4>
-                <% else %>
-                <h4 class="text-center text-muted"><%=files[:data]%> % different<span class="compare"></span></h4>
-                <% end %>
-                <% end %>
-              </div>
-            </div>
-            <% end %>
-            <% end %>
+
+      <!-- Images -->
+      <div class="col-sm-12 col-md-4">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Screenshot</h3>
           </div>
-          <div class="next col-sm-1"><span></span></div>
+          <div class="panel-body">
+
+            <div class="slideshow-container">
+
+              <div class="prev col-sm-1"><span></span></div>
+
+              <div class="slideshow pull-left col-sm-10">
+                <% directories.each do |dir, sizes| %>
+                <% sizes.to_a.sort.each do |size, files| %>
+
+                <div class="row slide <%= dir %>">
+
+                  <div class="difference col-sm-12">
+                    <h4>
+                      Screenshot
+                      <% if files[:data] > threshold %>
+                      <span class="label label-danger">FAILED</span>
+                      <% else %>
+                      <% if files[:data] < threshold and files[:data] != 0 %>
+                      <span class="label label-warning">WARNING</span>
+                      <% else %>
+                      <span class="label label-success">PASSING</span>
+                      <% end %>
+                      <% end %>
+                      <span class="label label-default"><%=files[:data]%>% CHANGE</span>
+                      <span class="compare"></span>
+                    </h4>
+                  </div>
+
+                  <a class="path" name="<%= dir %>"></a>
+
+                  <% files[:variants].each do |file| %>
+                  <div class="col-sm-4">
+                    <a class="shot" href="<%=file[:filename]%>">
+                      <img class="short-screenshot img-thumbnail img-responsive" src="<%=path%><%=file[:thumb]%>">
+                    </a>
+                    <p class="text-center"><a target="_blank" href="<%=file[:url]%>"><%=file[:name]%></a></p>
+                  </div>
+                  <% end %>
+                  <div class="col-sm-4">
+                    <% if files[:diff] %>
+                    <a class="shot" href="<%=files[:diff][:filename]%>">
+                      <img class="short-screenshot img-thumbnail img-responsive" src="<%=path%><%=files[:diff][:thumb]%>">
+                    </a>
+                    <% end %>
+                    <p class="text-center">diff</p>
+                  </div>
+
+                  <div class="col-sm-1">
+                    <p><%=size%>px <small><%= dir.gsub('__', '/') %></small></p>
+                  </div>
+
+                </div>
+                <% end %>
+                <% end %>
+              </div>
+
+              <div class="next col-sm-1"><span></span></div>
+
+            </div>
+          </div>
         </div>
+
+
       </div>
     </div>
   </div>
