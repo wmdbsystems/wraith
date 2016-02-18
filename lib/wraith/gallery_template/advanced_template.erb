@@ -19,17 +19,17 @@
     }
 
     .slideshow {
-      /*height: 510px;*/
+      height: 510px;
       /*margin: 20px 0;*/
     }
     .slide {
       background-color: #FFF !important;
-      /*width: 100% !important;*/
-      /*height: 510px !important;*/
+      width: 100% !important;
+      height: 510px !important;
     }
     .prev {
-      /*margin-left: -10px;*/
-      /*margin-right: 10px;*/
+      margin-left: -10px;
+      margin-right: 10px;
     }
     .next,
     .prev {
@@ -87,16 +87,6 @@
     .threshold {
       color: red;
     }
-    .compare {
-      cursor: pointer;
-      margin-left: 20px;
-    }
-
-    .compare:before {
-      font-family: "FontAwesome";
-      content:"\f0c5";
-      font-size: 30px;
-    }
     .compare-modal {
       position:fixed;
       margin:0;
@@ -122,7 +112,7 @@
   <script type="text/javascript">
     $(function() {
       $('.slideshow').cycle({
-        fx:     'fade',
+        fx:     'cover',
         speed:  200,
         prev:   '.prev',
         next:   '.next',
@@ -157,7 +147,7 @@
             newImage = slide.find('a.shot:eq(0)').attr('href'),
             oldImage = slide.find('a.shot:eq(1)').attr('href'),
             diffImage = slide.find('a.shot:eq(2)').attr('href');
-        $('.container').append('<div class="compare-modal"><div class="compare-container"><img src="'+newImage+'"/><img src="'+oldImage+'"/><img src="'+diffImage+'"/></div></div>');
+        $('#main').append('<div class="compare-modal"><div class="compare-container"><img src="'+newImage+'"/><img src="'+oldImage+'"/><img src="'+diffImage+'"/></div></div>');
         $('.compare-modal').unbind().on('click', function(){
           $(this).remove();
         })
@@ -167,40 +157,79 @@
       var $badge = $('.list-group-item .badge');
       $($badge).each(function( index ) {
         var diffNumber = parseInt($(this).text());
-        $(this).text(Math.round(diffNumber) + '%');
+        $(this).text(Math.ceil(diffNumber) + '%');
       });
+
+      // Count pages
+      var pagesAll = $('#page-list .list-group-item').length;
+      var pagesDanger = $('#page-list .list-group-item.list-group-item-danger').length;
+      var pagesWarning = $('#page-list .list-group-item.list-group-item-warning').length;
+      var pagesSuccess = $('#page-list .list-group-item.list-group-item-success').length;
+
+      $('#pagesAll .huge').html(pagesAll);
+      $('#pagesDanger .huge').html(pagesDanger);
+      $('#pagesWarning .huge').html(pagesWarning);
+      $('#pagesSuccess .huge').html(pagesSuccess);
+
+      var percentDanger = pagesDanger /pagesAll * 100;
+      var percentWarning = pagesWarning /pagesAll * 100;
+      var percentSuccess = pagesSuccess /pagesAll * 100;
+
+      $('.progress .progress-bar-danger').width(percentDanger + '%');
+      $('.progress .progress-bar-danger span').append(Math.round(percentDanger) + '%');
+      $('.progress .progress-bar-warning').width(percentWarning + '%');
+      $('.progress .progress-bar-warning span').append(Math.round(percentWarning) + '%');
+      $('.progress .progress-bar-success').width(percentSuccess + '%');
+      $('.progress .progress-bar-success span').append(Math.round(percentSuccess) + '%');
+
 
     })
   </script>
 
 </head>
 <body>
-  <div class="container-fluid">
+  <div id="main" class="container-fluid">
 
     <div class="row">
       <div class="col-sm-12">
-        <div class="page-header">
-          <h1>List of screenshots for <small><%= location %></small></h1>
-        </div>
-      </div>
-    </div>
 
-    <div class="page-header">
-      <img src="http://www.wmdb.de/Assets/Images/logo-wmdb-systems_pos.svg" alt="WMDB Systems">
-      <h4><small>taken <%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></small></h4>
+        <div class="page-header">
+          <img src="http://www.wmdb.de/Assets/Images/logo-wmdb-systems_pos.svg" alt="WMDB Systems" width="100">
+          <h1>Ghost <small><%= location %></small></h1>
+        </div>
+
+        <div class="page-header">
+          <h4><small>taken <%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></small></h4>
+          <h4>Threshold: <%= threshold %>%</h4>
+          <!--<pre><%= directories %></pre>-->
+        </div>
+
+        <div class="progress">
+          <div class="progress-bar progress-bar-success">
+            <span>Passed </span>
+          </div>
+          <div class="progress-bar progress-bar-warning">
+            <span>Warning </span>
+          </div>
+          <div class="progress-bar progress-bar-danger">
+            <span>Failed </span>
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <!-- Status panels begin -->
     <div class="row">
       <div class="col-lg-3 col-md-6">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" id="pagesAll">
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-3">
                 <i class="fa fa-files-o fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
-                <div class="huge">26</div>
+                <div class="huge"></div>
                 <h5>Total Pages</h5>
               </div>
             </div>
@@ -215,15 +244,15 @@
         </div>
       </div>
       <div class="col-lg-3 col-md-6">
-        <div class="panel panel-success">
+        <div class="panel panel-success" id="pagesSuccess">
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-3">
                 <i class="fa fa-check fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
-                <div class="huge">12</div>
-                <h5>Success!</h5>
+                <div class="huge"></div>
+                <h5>Passed</h5>
               </div>
             </div>
           </div>
@@ -237,15 +266,15 @@
         </div>
       </div>
       <div class="col-lg-3 col-md-6">
-        <div class="panel panel-warning">
+        <div class="panel panel-warning" id="pagesWarning">
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-3">
-                <i class="fa fa-info fa-5x"></i>
+                <i class="fa fa-exclamation-triangle fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
-                <div class="huge">124</div>
-                <h5>Warning!</h5>
+                <div class="huge"></div>
+                <h5>Warning</h5>
               </div>
             </div>
           </div>
@@ -259,15 +288,15 @@
         </div>
       </div>
       <div class="col-lg-3 col-md-6">
-        <div class="panel panel-danger">
+        <div class="panel panel-danger" id="pagesDanger">
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-3">
-                <i class="fa fa-times fa-5x"></i>
+                <i class="fa fa-bolt fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
-                <div class="huge">13</div>
-                <h5>Failed!</h5>
+                <div class="huge"></div>
+                <h5>Failed</h5>
               </div>
             </div>
           </div>
@@ -283,16 +312,20 @@
     </div>
     <!-- Status panels end -->
 
+    <div class="page-header">
+      <h3>Detail <small>Subtext for header</small></h3>
+    </div>
 
     <div class="row">
-      <!-- Pages -->
-      <div class="col-sm-12 col-md-8">
+
+      <!-- Pages panels begin -->
+      <div class="col-sm-12 col-md-7">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">Pages</h3>
+            <h3 class="panel-title"><i class="fa fa-file"></i> Pages</h3>
           </div>
 
-          <div class="list-group">
+          <div id="page-list" class="list-group">
             <% directories.each do |dir, sizes| %>
             <% sizes.to_a.sort.each do |size, files| %>
 
@@ -324,13 +357,14 @@
 
         </div>
       </div>
+      <!-- Pages panels end -->
 
-      <!-- Images -->
-      <div class="col-sm-12 col-md-4">
+      <!-- Sceenshot panels begin -->
+      <div class="col-sm-12 col-md-5">
 
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">Screenshot</h3>
+            <h3 class="panel-title"><i class="fa fa-video-camera"></i> Screenshot</h3>
           </div>
           <div class="panel-body">
 
@@ -344,24 +378,24 @@
 
                 <div class="row slide <%= dir %>">
 
-                  <div class="difference col-sm-12">
+                  <a class="path" name="<%= dir %>"></a>
+
+                  <div class="col-sm-12">
                     <h4>
-                      Screenshot
+                      Status (<%=size%>px)
                       <% if files[:data] > threshold %>
-                      <span class="label label-danger">FAILED</span>
+                      <span class="label label-danger">Failed</span>
                       <% else %>
                       <% if files[:data] < threshold and files[:data] != 0 %>
-                      <span class="label label-warning">WARNING</span>
+                      <span class="label label-warning">Warning</span>
                       <% else %>
-                      <span class="label label-success">PASSING</span>
+                      <span class="label label-success">Passed</span>
                       <% end %>
                       <% end %>
                       <span class="label label-default"><%=files[:data]%>% CHANGE</span>
-                      <span class="compare"></span>
                     </h4>
+                    <br>
                   </div>
-
-                  <a class="path" name="<%= dir %>"></a>
 
                   <% files[:variants].each do |file| %>
                   <div class="col-sm-4">
@@ -377,11 +411,13 @@
                       <img class="short-screenshot img-thumbnail img-responsive" src="<%=path%><%=files[:diff][:thumb]%>">
                     </a>
                     <% end %>
-                    <p class="text-center">diff</p>
+                    <p class="text-center"><a class="shot" href="<%=files[:diff][:filename]%>">diff</a></p>
                   </div>
 
-                  <div class="col-sm-1">
-                    <p><%=size%>px <small><%= dir.gsub('__', '/') %></small></p>
+                  <div class="col-sm-12">
+                    <button type="button" class="compare btn btn-primary btn-block"><i class="fa fa-files-o"></i> Compare</button>
+                    <br>
+                    <p><small><%= dir.gsub('__', '/') %></small></p>
                   </div>
 
                 </div>
@@ -397,7 +433,14 @@
 
 
       </div>
+      <!-- Sceenshot panels end -->
+
     </div>
+
+    <hr>
+
+    <h5 class="text-center">WMDB Ghost</h5>
+
   </div>
 </body>
 </html>
