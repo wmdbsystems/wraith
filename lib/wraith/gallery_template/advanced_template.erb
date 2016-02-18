@@ -3,9 +3,10 @@
 <head>
   <title>Ghost // <%= location %></title>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.cycle/3.03/jquery.cycle.all.min.js"></script>
   <style type="text/css">
     body {
@@ -42,6 +43,14 @@
 
     .huge {
       font-size: 40px;
+    }
+
+    .progress {
+      height: 30px;
+    }
+
+    .progress-bar {
+      line-height: 30px;
     }
 
     .prev span:before,
@@ -108,6 +117,19 @@
       margin-right: 20px;
       max-width: 30%;
     }
+
+    #screenshot {
+
+    }
+    #screenshot.affix {
+      right: 0;
+      top: 15px;
+    }
+
+    #screenshot.affix .panel {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
   </style>
   <script type="text/javascript">
     $(function() {
@@ -182,6 +204,26 @@
       $('.progress .progress-bar-success').width(percentSuccess + '%');
       $('.progress .progress-bar-success span').append(Math.round(percentSuccess) + '%');
 
+      // Filter pages
+      $('#pagesAll a').on('click', function(){
+        $('#page-list .list-group-item').show();
+      });
+      // Success
+      $('#pagesSuccess a').on('click', function(){
+        $('#page-list .list-group-item').hide();
+        $('#page-list .list-group-item.list-group-item-success').show();
+      });
+      // Warning
+      $('#pagesWarning a').on('click', function(){
+        $('#page-list .list-group-item').hide();
+        $('#page-list .list-group-item.list-group-item-warning').show();
+      });
+      // Danger
+      $('#pagesDanger a').on('click', function(){
+        $('#page-list .list-group-item').hide();
+        $('#page-list .list-group-item.list-group-item-danger').show();
+      });
+
 
     })
   </script>
@@ -234,9 +276,9 @@
               </div>
             </div>
           </div>
-          <a href="#">
+          <a href="javascript:;">
             <div class="panel-footer">
-              <span class="pull-left">View Details</span>
+              <span class="pull-left">View All</span>
               <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
               <div class="clearfix"></div>
             </div>
@@ -256,9 +298,9 @@
               </div>
             </div>
           </div>
-          <a href="#">
+          <a href="javascript:;">
             <div class="panel-footer">
-              <span class="pull-left">View Details</span>
+              <span class="pull-left">View Passed</span>
               <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
               <div class="clearfix"></div>
             </div>
@@ -278,9 +320,9 @@
               </div>
             </div>
           </div>
-          <a href="#">
+          <a href="javascript:;">
             <div class="panel-footer">
-              <span class="pull-left">View Details</span>
+              <span class="pull-left">View Warning</span>
               <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
               <div class="clearfix"></div>
             </div>
@@ -300,9 +342,9 @@
               </div>
             </div>
           </div>
-          <a href="#">
+          <a href="javascript:;">
             <div class="panel-footer">
-              <span class="pull-left">View Details</span>
+              <span class="pull-left">View Failed</span>
               <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
               <div class="clearfix"></div>
             </div>
@@ -360,7 +402,7 @@
       <!-- Pages panels end -->
 
       <!-- Sceenshot panels begin -->
-      <div class="col-sm-12 col-md-5">
+      <div id="screenshot" class="col-sm-12 col-md-5" data-spy="affix" data-offset-top="650" data-offset-bottom="10">
 
         <div class="panel panel-default">
           <div class="panel-heading">
