@@ -186,7 +186,7 @@
       // Round Diff
       var $badge = $('.list-group-item .badge');
       $($badge).each(function( index ) {
-        var diffNumber = parseInt($(this).text());
+        var diffNumber = parseFloat($(this).text());
         $(this).text(Math.ceil(diffNumber) + '%');
       });
 
@@ -238,21 +238,35 @@
 
 </head>
 <body>
+
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">WMDB Ghost</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+
+
   <div id="main" class="container-fluid">
 
     <div class="row">
       <div class="col-sm-12">
 
-        <div class="page-header">
-          <img src="http://www.wmdb.de/Assets/Images/logo-wmdb-systems_pos.svg" alt="WMDB Systems" width="100">
-          <h1>Ghost <small><%= location %></small></h1>
-        </div>
-
-        <div class="page-header">
-          <h4><small>taken <%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></small></h4>
-          <h4>Threshold: <%= threshold %>%</h4>
-          <!--<pre><%= directories %></pre>-->
-        </div>
+        <h2><%= location %></h2>
+        <h4><small>Generated: </small><%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></h4>
+        <h4><small>Threshold: </small><%= threshold %>%</h4>
+        <hr>
 
         <div class="progress">
           <div class="progress-bar progress-bar-success">
@@ -272,7 +286,7 @@
     <!-- Status panels begin -->
     <div class="row">
       <div class="col-lg-3 col-md-6">
-        <div class="panel panel-primary" id="pagesAll">
+        <div class="panel panel-info" id="pagesAll">
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-3">
@@ -363,7 +377,7 @@
     <!-- Status panels end -->
 
     <div class="page-header">
-      <h3>Detail <small>Subtext for header</small></h3>
+      <h3>Details <small>Subtext for header</small></h3>
     </div>
 
     <div class="row">
@@ -442,7 +456,7 @@
                       <span class="label label-success">Passed</span>
                       <% end %>
                       <% end %>
-                      <span class="label label-default"><%=files[:data]%>% CHANGE</span>
+                      <span class="label label-default"><%=files[:data]%>% Change</span>
                     </h4>
                     <br>
                   </div>
@@ -467,7 +481,7 @@
                   <div class="col-sm-12">
                     <button type="button" class="compare btn btn-primary btn-block"><i class="fa fa-files-o"></i> Compare</button>
                     <br>
-                    <p><small><%= dir.gsub('__', '/') %></small></p>
+                    <p><pre><%= dir.gsub('__', '/') %></pre></p>
                   </div>
 
                 </div>
