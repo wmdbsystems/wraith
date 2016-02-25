@@ -126,9 +126,6 @@
       max-width: 30%;
     }
 
-    #screenshot {
-
-    }
     #screenshot.affix {
       right: 0;
       top: 15px;
@@ -138,9 +135,16 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
 
+    .modal-xl {
+      width: auto;
+      margin: 10px;
+    }
+
   </style>
   <script type="text/javascript">
     $(function() {
+
+      // Slideshow
       $('.slideshow').cycle({
         fx:     'cover',
         speed:  200,
@@ -159,28 +163,17 @@
         timeout: 0
       });
 
+      // Page list
       $('.list-group .list-group-item').unbind().on('click', function(){
         var href = $(this).attr('href').substring(1);
-
         $('.slideshow').cycle($('.slide.'+href+':first').index());
       });
 
+      // Thumbnail buttom
       $('.shot').unbind().on('click', function(e){
         e.preventDefault();
         var url = $(this).attr('href');
         window.open(url,'_blank');
-      });
-
-      // Compare button
-      $('.compare').unbind().on('click', function(){
-        var slide = $(this).closest(".slide"),
-            newImage = slide.find('a.shot:eq(0)').attr('href'),
-            oldImage = slide.find('a.shot:eq(1)').attr('href'),
-            diffImage = slide.find('a.shot:eq(2)').attr('href');
-        $('#main').append('<div class="compare-modal"><div class="compare-container"><img src="'+newImage+'"/><img src="'+oldImage+'"/><img src="'+diffImage+'"/></div></div>');
-        $('.compare-modal').unbind().on('click', function(){
-          $(this).remove();
-        })
       });
 
       // Round Diff
@@ -232,6 +225,25 @@
         $('#page-list .list-group-item.list-group-item-danger').show();
       });
 
+      // Activate tooltip
+      $('[data-toggle="tooltip"]').tooltip();
+
+
+      // Bootstrap modal
+      $('#compareModal').on('show.bs.modal', function (event) {
+        var $button = $(event.relatedTarget),
+            $modal = $(this),
+            $slide = $button.closest('.slide');
+        var pageTitle = $button.data('page-title'); // Extract info from data-* attributes
+        var firstImage = $slide.find('a.shot:eq(0)').attr('href'),
+            secondImage = $slide.find('a.shot:eq(1)').attr('href'),
+            diffImage = $slide.find('a.shot:eq(2)').attr('href');
+
+        $modal.find('#compareModalLabel').text(pageTitle);
+        $modal.find('.firstImage').attr('src', firstImage);
+        $modal.find('.secondImage').attr('src', secondImage);
+        $modal.find('.diffImage').attr('src', diffImage);
+      });
 
     })
   </script>
@@ -239,6 +251,36 @@
 </head>
 <body>
 
+  <!-- Modal begin -->
+  <div class="modal fade" id="compareModal" tabindex="-1" role="dialog" aria-labelledby="compareModalLabel">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="compareModalLabel">Title</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <img class="firstImage img-thumbnail" src="" alt=""/>
+            </div>
+            <div class="col-sm-4">
+              <img class="secondImage img-thumbnail" src="" alt=""/>
+            </div>
+            <div class="col-sm-4">
+              <img class="diffImage img-thumbnail" src="" alt=""/>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal end -->
+
+  <!-- Navigation begin -->
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -256,36 +298,27 @@
       </div><!--/.nav-collapse -->
     </div>
   </nav>
+  <!-- Navigation end -->
 
-
+  <!-- Main content begin -->
   <div id="main" class="container-fluid">
 
     <div class="row">
       <div class="col-sm-12">
 
-        <h2><%= location %></h2>
-        <h4><small>Generated: </small><%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></h4>
-        <h4><small>Threshold: </small><%= threshold %>%</h4>
+        <h2>Project: <%= location %></h2>
+        <h4>Generated: <small><%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></small></h4>
+        <h4>Duration: <small>12.13 minutes</small></h4>
+        <h4>Threshold: <small><%= threshold %>%</small></h4>
+        <h4>Test Result: <span class="label label-success">Passed</span></h4>
         <hr>
-
-        <div class="progress">
-          <div class="progress-bar progress-bar-success">
-            <span>Passed </span>
-          </div>
-          <div class="progress-bar progress-bar-warning">
-            <span>Warning </span>
-          </div>
-          <div class="progress-bar progress-bar-danger">
-            <span>Failed </span>
-          </div>
-        </div>
 
       </div>
     </div>
 
     <!-- Status panels begin -->
     <div class="row">
-      <div class="col-lg-3 col-md-6">
+      <div class="col-md-3 col-sm-6">
         <div class="panel panel-info" id="pagesAll">
           <div class="panel-heading">
             <div class="row">
@@ -307,7 +340,7 @@
           </a>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6">
+      <div class="col-md-3 col-sm-6">
         <div class="panel panel-success" id="pagesSuccess">
           <div class="panel-heading">
             <div class="row">
@@ -316,7 +349,7 @@
               </div>
               <div class="col-xs-9 text-right">
                 <div class="huge"></div>
-                <h5>Passed</h5>
+                <h5 class="text-uppercase"><span class="label label-success">Passed</span></h5>
               </div>
             </div>
           </div>
@@ -329,7 +362,7 @@
           </a>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6">
+      <div class="col-md-3 col-sm-6">
         <div class="panel panel-warning" id="pagesWarning">
           <div class="panel-heading">
             <div class="row">
@@ -338,7 +371,7 @@
               </div>
               <div class="col-xs-9 text-right">
                 <div class="huge"></div>
-                <h5>Warning</h5>
+                <h5 class="text-uppercase"><span class="label label-warning">Warning</span></h5>
               </div>
             </div>
           </div>
@@ -351,7 +384,7 @@
           </a>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6">
+      <div class="col-md-3 col-sm-6">
         <div class="panel panel-danger" id="pagesDanger">
           <div class="panel-heading">
             <div class="row">
@@ -360,7 +393,7 @@
               </div>
               <div class="col-xs-9 text-right">
                 <div class="huge"></div>
-                <h5>Failed</h5>
+                <h5 class="text-uppercase"><span class="label label-danger">Failed</span></h5>
               </div>
             </div>
           </div>
@@ -376,8 +409,23 @@
     </div>
     <!-- Status panels end -->
 
+
+    <!-- Progress bar begin -->
+    <div class="progress">
+      <div class="progress-bar progress-bar-success">
+        <span class="text-uppercase">Passed </span>
+      </div>
+      <div class="progress-bar progress-bar-warning">
+        <span class="text-uppercase">Warning </span>
+      </div>
+      <div class="progress-bar progress-bar-danger">
+        <span class="text-uppercase">Failed </span>
+      </div>
+    </div>
+    <!-- Progress bar end -->
+
     <div class="page-header">
-      <h3>Details <small>Subtext for header</small></h3>
+      <h3>Detail <small>Page results</small></h3>
     </div>
 
     <div class="row">
@@ -448,38 +496,36 @@
                     <h4>
                       Status (<%=size%>px)
                       <% if files[:data] > threshold %>
-                      <span class="label label-danger">Failed</span>
+                      <span class="label label-danger text-uppercase">Failed</span>
                       <% else %>
                       <% if files[:data] < threshold and files[:data] != 0 %>
-                      <span class="label label-warning">Warning</span>
+                      <span class="label label-warning text-uppercase">Warning</span>
                       <% else %>
-                      <span class="label label-success">Passed</span>
+                      <span class="label label-success text-uppercase">Passed</span>
                       <% end %>
                       <% end %>
-                      <span class="label label-default"><%=files[:data]%>% Change</span>
+                      <span class="label label-default text-uppercase"><%=files[:data]%>% Change</span>
                     </h4>
                     <br>
                   </div>
 
                   <% files[:variants].each do |file| %>
                   <div class="col-sm-4">
-                    <a class="shot" href="<%=file[:filename]%>">
-                      <img class="short-screenshot img-thumbnail img-responsive" src="<%=path%><%=file[:thumb]%>">
+                    <a class="shot thumbnail" href="<%=file[:filename]%>" data-toggle="tooltip" data-placement="bottom" title="<%=file[:name]%>">
+                      <img src="<%=path%><%=file[:thumb]%>">
                     </a>
-                    <p class="text-center"><a target="_blank" href="<%=file[:url]%>"><%=file[:name]%></a></p>
                   </div>
                   <% end %>
                   <div class="col-sm-4">
                     <% if files[:diff] %>
-                    <a class="shot" href="<%=files[:diff][:filename]%>">
-                      <img class="short-screenshot img-thumbnail img-responsive" src="<%=path%><%=files[:diff][:thumb]%>">
+                    <a class="shot thumbnail" href="<%=files[:diff][:filename]%>" data-toggle="tooltip" data-placement="bottom" title="Difference">
+                      <img src="<%=path%><%=files[:diff][:thumb]%>">
                     </a>
-                    <p class="text-center"><a class="shot" href="<%=files[:diff][:filename]%>">diff</a></p>
                     <% end %>
                   </div>
 
                   <div class="col-sm-12">
-                    <button type="button" class="compare btn btn-primary btn-block"><i class="fa fa-files-o"></i> Compare</button>
+                    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%= dir.gsub('__', '/') %>"><i class="fa fa-files-o"></i> Compare</button>
                     <br>
                     <p><pre><%= dir.gsub('__', '/') %></pre></p>
                   </div>
@@ -506,5 +552,7 @@
     <h5 class="text-center">WMDB Ghost</h5>
 
   </div>
+  <!-- Main content end -->
+
 </body>
 </html>
