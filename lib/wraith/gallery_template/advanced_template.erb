@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Ghost // <%= location %></title>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
   <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.cycle/3.03/jquery.cycle.all.min.js"></script>
@@ -14,31 +19,46 @@
       float: left;
       width: 100%;
     }
-    .slideshow-container {
-      /*position: fixed;*/
-      /*width: 870px;*/
+
+    .navbar-default {
+      background-color: #f8f8f8;
+      border: 0 none;
+      border-bottom: 2px solid #ccc;
+      border-radius: 0;
     }
 
-    .slideshow {
-      height: 510px;
-      /*margin: 20px 0;*/
+    /* Sections */
+    #footerSection {
+      margin-bottom: 20px;
+    }
+
+    .slideshow, .slide, .next, .prev {
+      height: 400px;
     }
     .slide {
       background-color: #FFF !important;
       width: 100% !important;
-      height: 510px !important;
-    }
-    .prev {
-      margin-left: -10px;
-      margin-right: 10px;
+      margin: 0;
     }
     .next,
     .prev {
       cursor: pointer;
-      background-color: #e7e7e7;
-      border: 2px solid #eee;
-      height: 400px;
-      /*margin-top: 60px;*/
+      background-color: #f5f5f5;
+    }
+
+    .prev span:before,
+    .next span:before {
+      font-size: 40px;
+      display: block;
+      font-family: "FontAwesome";
+      margin-top: 173px;
+    }
+
+    .prev span:before {
+      content:"\f0d9";
+    }
+    .next span:before {
+      content:"\f0da";
     }
 
     .huge {
@@ -53,37 +73,22 @@
       line-height: 30px;
     }
 
-    .prev span:before,
-    .next span:before {
-      font-size: 35px;
-      padding: 10px;
-      display: block;
-      font-family: "FontAwesome";
-      margin-top: 165px;
-      display: block;
-    }
-
-    .prev span:before {
-      content:"\f0d9";
-    }
-    .next span:before {
-      content:"\f0da";
-    }
-
     .list-group-item {
       word-wrap: break-word;
       overflow: hidden;
       white-space: nowrap;
     }
 
-    .list-group-item .glyphicon {
+    .list-group-item .text {
+      width: 85%;
+      display: inline-block;
+      vertical-align: bottom;
+      padding-left: 15px;
       overflow: hidden;
-      width: 90%;
     }
 
-
     .list-group-item.checked .check-mark:after {
-      color: #23e343;
+      color: rgba(128,128,128,1);
     }
     .list-group-item .check-mark {
       word-wrap: break-word;
@@ -93,9 +98,9 @@
     .list-group-item .check-mark:after {
       content:"\f00c";
       font-family: "FontAwesome";
-      color: #ccc;
+      color: rgba(128,128,128,0.3);
       position: absolute;
-      right: 10px;
+      right: 65px;
       bottom: 10px;
     }
     .checked a {
@@ -125,16 +130,17 @@
       margin-right: 20px;
       max-width: 30%;
     }
-
     #screenshot.affix {
       right: 0;
       top: 15px;
     }
 
-    #screenshot.affix .panel {
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    #screenshot .panel {
+      transition: all 0.3s linear;
     }
-
+    #screenshot.affix .panel {
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
     .modal-xl {
       width: auto;
       margin: 10px;
@@ -146,7 +152,7 @@
 
       // Slideshow
       $('.slideshow').cycle({
-        fx:     'cover',
+        fx:     'fade',
         speed:  200,
         prev:   '.prev',
         next:   '.next',
@@ -225,6 +231,16 @@
         $('#page-list .list-group-item.list-group-item-danger').show();
       });
 
+      // Status
+      if (pagesDanger > 0) {
+        $('#status').text('Failed').addClass('label-danger');
+      } else if (pagesWarning > 0) {
+        $('#status').text('Warning').addClass('label-warning');
+      } else {
+        $('#status').text('Passed').addClass('label-success');
+      }
+
+
       // Activate tooltip
       $('[data-toggle="tooltip"]').tooltip();
 
@@ -245,6 +261,18 @@
         $modal.find('.diffImage').attr('src', diffImage);
       });
 
+      // Affix
+      $('#screenshot').affix({
+        offset: {
+          top: function () {
+            navigationSectionHeight = $('#navigationSection').outerHeight(true);
+            overviewSectionHeight = $('#overviewSection').outerHeight(true);
+            return (this.top =  navigationSectionHeight + overviewSectionHeight - 15);
+          },
+          bottom: 0
+        }
+      });
+
     })
   </script>
 
@@ -252,7 +280,7 @@
 <body>
 
   <!-- Modal begin -->
-  <div class="modal fade" id="compareModal" tabindex="-1" role="dialog" aria-labelledby="compareModalLabel">
+  <div id="compareModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="compareModalLabel">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -280,8 +308,8 @@
   </div>
   <!-- Modal end -->
 
-  <!-- Navigation begin -->
-  <nav class="navbar navbar-default">
+  <!-- Navigation section begin -->
+  <nav id="navigationSection" class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -298,23 +326,35 @@
       </div><!--/.nav-collapse -->
     </div>
   </nav>
-  <!-- Navigation end -->
+  <!-- Navigation section end -->
 
-  <!-- Main content begin -->
-  <div id="main" class="container-fluid">
+  <!-- Overview section begin -->
+  <div id="overviewSection" class="container-fluid">
 
+    <!-- Summary begin -->
     <div class="row">
       <div class="col-sm-12">
 
         <h2>Project: <%= location %></h2>
-        <h4>Generated: <small><%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></small></h4>
-        <h4>Duration: <small>12.13 minutes</small></h4>
-        <h4>Threshold: <small><%= threshold %>%</small></h4>
-        <h4>Test Result: <span class="label label-success">Passed</span></h4>
+
+        <dl class="dl-horizontal">
+          <dt>Project</dt>
+          <dd><%= location %></dd>
+          <dt>Generated</dt>
+          <dd><%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></dd>
+          <dt>Duration</dt>
+          <dd><del>12.13 minutes</del></dd>
+          <dt>Threshold</dt>
+          <dd><%= threshold %>%</dd>
+          <dt>Status</dt>
+          <dd><span id="status" class="label text-uppercase"></span></dd>
+        </dl>
+
         <hr>
 
       </div>
     </div>
+    <!-- Summary end -->
 
     <!-- Status panels begin -->
     <div class="row">
@@ -367,7 +407,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-3">
-                <i class="fa fa-exclamation-triangle fa-5x"></i>
+                <i class="fa fa-exclamation fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
                 <div class="huge"></div>
@@ -409,7 +449,6 @@
     </div>
     <!-- Status panels end -->
 
-
     <!-- Progress bar begin -->
     <div class="progress">
       <div class="progress-bar progress-bar-success">
@@ -424,10 +463,21 @@
     </div>
     <!-- Progress bar end -->
 
-    <div class="page-header">
-      <h3>Detail <small>Page results</small></h3>
+    <!-- Headline begin -->
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="page-header">
+          <h3>Detail <small>Page results</small></h3>
+        </div>
+      </div>
     </div>
+    <!-- Headline end -->
 
+  </div>
+  <!-- Overview section end -->
+
+  <!-- Detail section begin -->
+  <div id="detailSection" class="container-fluid">
     <div class="row">
 
       <!-- Pages panels begin -->
@@ -445,20 +495,23 @@
             <a class="list-group-item list-group-item-danger" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data]%>%</span>
               <span class="check-mark"></span>
-              <span class="glyphicon glyphicon-remove" aria-hidden="true"> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+              <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% else %>
             <% if files[:data] < threshold and files[:data] != 0 %>
             <a class="list-group-item list-group-item-warning" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data]%>%</span>
               <span class="check-mark"></span>
-              <span class="glyphicon glyphicon-minus" aria-hidden="true"> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+              <span class="fa fa-exclamation" aria-hidden="true"></span>
+              <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% else %>
             <a class="list-group-item list-group-item-success" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data]%>%</span>
               <span class="check-mark"></span>
-              <span class="glyphicon glyphicon-ok" aria-hidden="true"> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+              <span class="fa fa-check" aria-hidden="true"></span>
+              <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% end %>
             <% end %>
@@ -472,7 +525,7 @@
       <!-- Pages panels end -->
 
       <!-- Sceenshot panels begin -->
-      <div id="screenshot" class="col-sm-12 col-md-5" data-spy="affix" data-offset-top="650" data-offset-bottom="10">
+      <div id="screenshot" class="hidden-xs hidden-sm col-md-5">
 
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -480,7 +533,7 @@
           </div>
           <div class="panel-body">
 
-            <div class="slideshow-container">
+            <div class=row">
 
               <div class="prev col-sm-1"><span></span></div>
 
@@ -525,9 +578,11 @@
                   </div>
 
                   <div class="col-sm-12">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%= dir.gsub('__', '/') %>"><i class="fa fa-files-o"></i> Compare</button>
                     <br>
-                    <p><pre><%= dir.gsub('__', '/') %></pre></p>
+                    <div class="well well-sm">
+                      <a href="#<%=path%><%=dir%>"><i class="fa fa-link"></i> <%= dir.gsub('__', '/') %></a>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%= dir.gsub('__', '/') %>"><i class="fa fa-files-o"></i> Compare</button>
                   </div>
 
                 </div>
@@ -546,13 +601,19 @@
       <!-- Sceenshot panels end -->
 
     </div>
-
-    <hr>
-
-    <h5 class="text-center">WMDB Ghost</h5>
-
   </div>
-  <!-- Main content end -->
+  <!-- Detail section end -->
+
+  <!-- Footer section begin -->
+  <div id="footerSection" class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <hr>
+        <h5 class="text-center">WMDB Ghost</h5>
+      </div>
+    </div>
+  </div>
+  <!-- Footer section end -->
 
 </body>
 </html>
