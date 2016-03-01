@@ -182,35 +182,6 @@
         window.open(url,'_blank');
       });
 
-      // Round Diff
-      var $badge = $('.list-group-item .badge');
-      $($badge).each(function( index ) {
-        var diffNumber = parseFloat($(this).text());
-        $(this).text(Math.ceil(diffNumber) + '%');
-      });
-
-      // Count pages
-      var pagesAll = $('#page-list .list-group-item').length;
-      var pagesDanger = $('#page-list .list-group-item.list-group-item-danger').length;
-      var pagesWarning = $('#page-list .list-group-item.list-group-item-warning').length;
-      var pagesSuccess = $('#page-list .list-group-item.list-group-item-success').length;
-
-      $('#pagesAll .huge').html(pagesAll);
-      $('#pagesDanger .huge').html(pagesDanger);
-      $('#pagesWarning .huge').html(pagesWarning);
-      $('#pagesSuccess .huge').html(pagesSuccess);
-
-      var percentDanger = pagesDanger /pagesAll * 100;
-      var percentWarning = pagesWarning /pagesAll * 100;
-      var percentSuccess = pagesSuccess /pagesAll * 100;
-
-      $('.progress .progress-bar-danger').width(percentDanger + '%');
-      $('.progress .progress-bar-danger span').append(Math.round(percentDanger) + '%');
-      $('.progress .progress-bar-warning').width(percentWarning + '%');
-      $('.progress .progress-bar-warning span').append(Math.round(percentWarning) + '%');
-      $('.progress .progress-bar-success').width(percentSuccess + '%');
-      $('.progress .progress-bar-success span').append(Math.round(percentSuccess) + '%');
-
       // Filter pages
       $('#pagesAll a').on('click', function(){
         $('#page-list .list-group-item').show();
@@ -230,16 +201,6 @@
         $('#page-list .list-group-item').hide();
         $('#page-list .list-group-item.list-group-item-danger').show();
       });
-
-      // Status
-      if (pagesDanger > 0) {
-        $('#status').text('Failed').addClass('label-danger');
-      } else if (pagesWarning > 0) {
-        $('#status').text('Warning').addClass('label-warning');
-      } else {
-        $('#status').text('Passed').addClass('label-success');
-      }
-
 
       // Activate tooltip
       $('[data-toggle="tooltip"]').tooltip();
@@ -278,7 +239,50 @@
 
 </head>
 <body>
+<%
 
+  # Count pages
+  totalPagesCount = 0;
+  failedPagesCount = 0;
+  warningPagesCount = 0;
+  passedPagesCount = 0;
+
+  directories.each do |dir, sizes|
+    sizes.to_a.sort.each do |size, files|
+      totalPagesCount += 1
+      if files[:data] > threshold
+        failedPagesCount += 1
+      else
+        if files[:data] < threshold and files[:data] != 0
+          warningPagesCount += 1
+        else
+          passedPagesCount += 1
+        end
+      end
+    end
+  end
+
+  # Progress bar
+  percentFailed = failedPagesCount.to_f / totalPagesCount * 100
+  percentWarning = warningPagesCount.to_f / totalPagesCount * 100
+  percentPassed = passedPagesCount.to_f / totalPagesCount * 100
+
+  # Status label
+  statusLabel = ''
+
+  if failedPagesCount > 0
+    statusLabel = 'label-danger'
+    statusText = 'Failed'
+  else if warningPagesCount > 0
+    statusLabel = 'label-warning'
+    statusText = 'Warning'
+    else
+      statusLabel = 'label-success'
+      statusText = 'Passed'
+    end
+  end
+
+%>
   <!-- Modal begin -->
   <div id="compareModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="compareModalLabel">
     <div class="modal-dialog modal-xl" role="document">
@@ -347,7 +351,7 @@
           <dt>Threshold</dt>
           <dd><%= threshold %>%</dd>
           <dt>Status</dt>
-          <dd><span id="status" class="label text-uppercase"></span></dd>
+          <dd><span id="status" class="label <%=statusLabel%> text-uppercase"><%=statusText%></span></dd>
         </dl>
 
         <hr>
@@ -366,7 +370,7 @@
                 <i class="fa fa-files-o fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
-                <div class="huge"></div>
+                <div class="huge"><%= totalPagesCount %></div>
                 <h5>Total Pages</h5>
               </div>
             </div>
@@ -388,7 +392,7 @@
                 <i class="fa fa-check fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
-                <div class="huge"></div>
+                <div class="huge"><%= passedPagesCount %></div>
                 <h5 class="text-uppercase"><span class="label label-success">Passed</span></h5>
               </div>
             </div>
@@ -410,7 +414,7 @@
                 <i class="fa fa-exclamation fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
-                <div class="huge"></div>
+                <div class="huge"><%= warningPagesCount %></div>
                 <h5 class="text-uppercase"><span class="label label-warning">Warning</span></h5>
               </div>
             </div>
@@ -432,7 +436,7 @@
                 <i class="fa fa-bolt fa-5x"></i>
               </div>
               <div class="col-xs-9 text-right">
-                <div class="huge"></div>
+                <div class="huge"><%= failedPagesCount %></div>
                 <h5 class="text-uppercase"><span class="label label-danger">Failed</span></h5>
               </div>
             </div>
@@ -451,14 +455,14 @@
 
     <!-- Progress bar begin -->
     <div class="progress">
-      <div class="progress-bar progress-bar-success">
-        <span class="text-uppercase">Passed </span>
+      <div class="progress-bar progress-bar-success" style="width: <%= percentPassed %>%">
+        <span class="text-uppercase">Passed <%= percentPassed.round %>%</span>
       </div>
-      <div class="progress-bar progress-bar-warning">
-        <span class="text-uppercase">Warning </span>
+      <div class="progress-bar progress-bar-warning" style="width: <%= percentWarning %>%">
+        <span class="text-uppercase">Warning <%= percentWarning.round %>%</span>
       </div>
-      <div class="progress-bar progress-bar-danger">
-        <span class="text-uppercase">Failed </span>
+      <div class="progress-bar progress-bar-danger" style="width: <%= percentFailed %>%">
+        <span class="text-uppercase">Failed <%= percentFailed.round %>%</span>
       </div>
     </div>
     <!-- Progress bar end -->
@@ -493,7 +497,7 @@
 
             <% if files[:data] > threshold %>
             <a class="list-group-item list-group-item-danger" href="#<%=path%><%=dir%>">
-              <span class="badge"><%=files[:data]%>%</span>
+              <span class="badge"><%=files[:data].ceil%>%</span>
               <span class="check-mark"></span>
               <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
               <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
@@ -501,14 +505,14 @@
             <% else %>
             <% if files[:data] < threshold and files[:data] != 0 %>
             <a class="list-group-item list-group-item-warning" href="#<%=path%><%=dir%>">
-              <span class="badge"><%=files[:data]%>%</span>
+              <span class="badge"><%=files[:data].ceil%>%</span>
               <span class="check-mark"></span>
               <span class="fa fa-exclamation" aria-hidden="true"></span>
               <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% else %>
             <a class="list-group-item list-group-item-success" href="#<%=path%><%=dir%>">
-              <span class="badge"><%=files[:data]%>%</span>
+              <span class="badge"><%=files[:data].ceil%>%</span>
               <span class="check-mark"></span>
               <span class="fa fa-check" aria-hidden="true"></span>
               <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
