@@ -136,7 +136,10 @@ class Wraith::GalleryGenerator
       :location    => location,
       :directories => directories,
       :path        => path,
-      :threshold   => wraith.threshold
+      :threshold   => wraith.threshold,
+      :domains     => wraith.domains,
+      :project     => wraith.project
+
     }
     html = ERB.new(template).result(ErbBinding.new(locals).get_binding)
     File.open(destination, "w") do |outf|

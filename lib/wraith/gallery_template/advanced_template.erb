@@ -302,6 +302,9 @@
   end
 
 %>
+
+
+
   <!-- Modal begin -->
   <div id="compareModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="compareModalLabel">
     <div class="modal-dialog modal-xl" role="document">
@@ -358,7 +361,7 @@
     <div class="row">
       <div class="col-sm-12">
 
-        <h2>Project: <%= location %></h2>
+        <h2>Project: <%= project %></h2>
 
         <dl class="dl-horizontal">
           <dt>Project</dt>
@@ -587,9 +590,10 @@
 
                   <% files[:variants].each do |file| %>
                   <div class="col-sm-4">
-                    <a class="shot thumbnail" href="<%=file[:filename]%>" data-toggle="tooltip" data-placement="bottom" title="<%=file[:name]%>">
+                    <a class="shot thumbnail" href="<%=file[:filename]%>" title="<%=file[:name]%>">
                       <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="<%=path%><%=file[:thumb]%>" width="200" height="200" alt="" />
                     </a>
+                    <p class="text-center"><a href="<%= domains['wmdb_' + file[:name]] %><%=dir.gsub('__', '/')%>/" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
                   </div>
                   <% end %>
                   <div class="col-sm-4">

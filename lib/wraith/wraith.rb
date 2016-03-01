@@ -33,6 +33,11 @@ class Wraith::Wraith
     @config["history_dir"] || false
   end
 
+  def project
+    @config["project"] || ''
+  end
+
+
   def engine
     engine = @config["browser"]
     # Legacy support for those using the old style "browser: \n phantomjs: 'casperjs'" configs
