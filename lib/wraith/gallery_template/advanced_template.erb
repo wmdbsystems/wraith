@@ -261,10 +261,10 @@
 <%
 
   # Count pages
-  totalPagesCount = 0;
-  failedPagesCount = 0;
-  warningPagesCount = 0;
-  passedPagesCount = 0;
+  totalPagesCount = 0
+  failedPagesCount = 0
+  warningPagesCount = 0
+  passedPagesCount = 0
 
   directories.each do |dir, sizes|
     sizes.to_a.sort.each do |size, files|
@@ -361,17 +361,27 @@
     <div class="row">
       <div class="col-sm-12">
 
-        <h2>Project: <%= project %></h2>
+        <h2>Project: <%= config['project'] %></h2>
 
         <dl class="dl-horizontal">
-          <dt>Project</dt>
-          <dd><%= location %></dd>
+          <dt>Domains</dt>
+          <% config['domains'].each do |domain| %>
+          <dd><kbd><%= domain[1] %></kbd></dd>
+          <% end %>
           <dt>Generated</dt>
-          <dd><%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></dd>
+          <dd><kbd><%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></kbd></dd>
           <dt>Duration</dt>
-          <dd><del>12.13 minutes</del></dd>
+          <dd><kbd><del>12.13 minutes</del></kbd></dd>
           <dt>Threshold</dt>
-          <dd><%= threshold %>%</dd>
+          <dd><kbd><%= threshold %>%</kbd></dd>
+          <dt>Fuzz</dt>
+          <dd><kbd><%= config['fuzz'] %></kbd></dd>
+          <dt>Resolution</dt>
+          <dd><kbd><%= config['screen_widths'] %></kbd></dd>
+          <dt>Spider Skips</dt>
+          <dd><kbd><%= config['spider_skips'] ? config['spider_skips'] : '-' %></kbd></dd>
+          <dt>Browser</dt>
+          <dd><kbd><%= config['browser'] ? config['browser'] : '-' %></kbd></dd>
           <dt>Status</dt>
           <dd><span id="status" class="label <%=statusLabel%> text-uppercase"><%=statusText%></span></dd>
         </dl>
@@ -521,7 +531,7 @@
             <a class="list-group-item list-group-item-danger" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data].ceil%>%</span>
               <span class="check-mark"></span>
-              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+              <span class="fa fa-bolt fa-fw" aria-hidden="true"></span>
               <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% else %>
@@ -529,14 +539,14 @@
             <a class="list-group-item list-group-item-warning" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data].ceil%>%</span>
               <span class="check-mark"></span>
-              <span class="fa fa-exclamation" aria-hidden="true"></span>
+              <span class="fa fa-exclamation fa-fw" aria-hidden="true"></span>
               <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% else %>
             <a class="list-group-item list-group-item-success" href="#<%=path%><%=dir%>">
               <span class="badge"><%=files[:data].ceil%>%</span>
               <span class="check-mark"></span>
-              <span class="fa fa-check" aria-hidden="true"></span>
+              <span class="fa fa-check fa-fw" aria-hidden="true"></span>
               <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
             </a>
             <% end %>
@@ -593,7 +603,7 @@
                     <a class="shot thumbnail" href="<%=file[:filename]%>" title="<%=file[:name]%>">
                       <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="<%=path%><%=file[:thumb]%>" width="200" height="200" alt="" />
                     </a>
-                    <p class="text-center"><a href="<%= domains['wmdb_' + file[:name]] %><%=dir.gsub('__', '/')%>/" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
+                    <p class="text-center"><a href="<%= domains['wmdb_' + file[:name]] %>/<%=dir.gsub('__', '/')%>/" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
                   </div>
                   <% end %>
                   <div class="col-sm-4">

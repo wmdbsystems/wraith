@@ -138,7 +138,7 @@ class Wraith::GalleryGenerator
       :path        => path,
       :threshold   => wraith.threshold,
       :domains     => wraith.domains,
-      :project     => wraith.project
+      :config      => wraith.config
 
     }
     html = ERB.new(template).result(ErbBinding.new(locals).get_binding)
