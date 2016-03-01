@@ -13,7 +13,7 @@
   <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.cycle/3.03/jquery.cycle.all.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/unveil/1.3.0/jquery.unveil.min.js"></script>
   <style type="text/css">
     body {
       position: relative;
@@ -245,14 +245,13 @@
       });
 
       // lazy load
-      $('img.lazy').lazyload({
-        threshold : 200,
-        event : 'click',
-        effect : 'fadeIn'
+      // TODO: Bind event to slideshow
+      $("img.lazy").unveil(100, function() {
+        $(this).load(function() {
+          this.style.background = '#fff';
+        });
       });
 
-      // TODO: Bind event to slideshow
-      $('img.lazy').trigger('custom');
 
     })
   </script>
@@ -589,14 +588,14 @@
                   <% files[:variants].each do |file| %>
                   <div class="col-sm-4">
                     <a class="shot thumbnail" href="<%=file[:filename]%>" data-toggle="tooltip" data-placement="bottom" title="<%=file[:name]%>">
-                      <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-original="<%=path%><%=file[:thumb]%>" width="200" height="200" alt="" />
+                      <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="<%=path%><%=file[:thumb]%>" width="200" height="200" alt="" />
                     </a>
                   </div>
                   <% end %>
                   <div class="col-sm-4">
                     <% if files[:diff] %>
                     <a class="shot thumbnail" href="<%=files[:diff][:filename]%>" data-toggle="tooltip" data-placement="bottom" title="Difference">
-                      <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-original="<%=path%><%=files[:diff][:thumb]%>" width="200" height="200" alt="" />
+                      <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="<%=path%><%=files[:diff][:thumb]%>" width="200" height="200" alt="" />
                     </a>
                     <% end %>
                   </div>
