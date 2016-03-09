@@ -27,11 +27,11 @@ class Wraith::Wraith
 
   def directory
     if !@config["directory"].nil?
-      @config["directory"].is_a?(Array) ? @config["directory"].first : @config["directory"]
+      @config["directory"].is_a?(Array) ? "shots/" + @config["directory"].first : "shots/" + @config["directory"]
     else if !@config["project"].nil?
-      "./shots/" + @config["project"]
+      "shots/" + @config["project"]
     else
-      "./shots/dummy"
+      "shots/dummy"
     end
     end
   end
@@ -102,7 +102,7 @@ class Wraith::Wraith
   end
 
   def spider_file
-    default = @config["spider_file"] ? @config["spider_file"] : "spider.txt"
+    default = @config["spider_file"] ? "spider/" + @config["spider_file"] : "spider/spider.txt"
     if @config["project"].nil?
       default
     else
