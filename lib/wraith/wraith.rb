@@ -26,8 +26,14 @@ class Wraith::Wraith
   end
 
   def directory
-    # Legacy support for those using array configs
-    @config["directory"].is_a?(Array) ? @config["directory"].first : @config["directory"]
+    if !@config["directory"].nil?
+      @config["directory"].is_a?(Array) ? @config["directory"].first : @config["directory"]
+    else if !@config["project"].nil?
+      "./shots/" + @config["project"]
+    else
+      "./shots/dummy"
+    end
+    end
   end
 
   def history_dir
