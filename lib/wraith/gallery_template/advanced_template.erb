@@ -260,6 +260,8 @@
 <body>
 <%
 
+
+
   # Count pages
   totalPagesCount = 0
   failedPagesCount = 0
@@ -375,15 +377,15 @@
           <dt>Threshold</dt>
           <dd><kbd><%= threshold %>%</kbd></dd>
           <dt>Fuzz</dt>
-          <dd><kbd><%= config['fuzz'] %></kbd></dd>
+          <dd><kbd><%= fuzz %></kbd></dd>
           <dt>Resolution</dt>
           <dd><kbd><%= config['screen_widths'] %></kbd></dd>
           <dt>Spider Skips</dt>
           <dd><kbd><%= config['spider_skips'] ? config['spider_skips'] : '-' %></kbd></dd>
           <dt>Before Capture</dt>
           <dd><kbd><%= config['before_capture'] ? config['before_capture'] : '-' %></kbd></dd>
-          <dt>Browser</dt>
-          <dd><kbd><%= config['browser'] ? config['browser'] : '-' %></kbd></dd>
+          <dt>Engine</dt>
+          <dd><kbd><%= engine %></kbd></dd>
           <dt>Status</dt>
           <dd><span id="status" class="label <%=statusLabel%> text-uppercase"><%=statusText%></span></dd>
         </dl>

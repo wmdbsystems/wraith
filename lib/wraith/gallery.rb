@@ -138,6 +138,8 @@ class Wraith::GalleryGenerator
       :path        => path,
       :threshold   => wraith.threshold,
       :domains     => wraith.domains,
+      :engine      => wraith.engine,
+      :fuzz        => wraith.fuzz,
       :config      => wraith.config
 
     }

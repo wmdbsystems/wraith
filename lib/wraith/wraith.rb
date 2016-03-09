@@ -9,6 +9,7 @@ class Wraith::Wraith
   def initialize(config, yaml_passed = false)
     begin
       @config = yaml_passed ? config : open_config_file(config)
+      @config_file = config
       logger.level = verbose ? Logger::DEBUG : Logger::INFO
     rescue
       logger.error "unable to find config at #{config}"
@@ -37,9 +38,8 @@ class Wraith::Wraith
     @config["project"] || ''
   end
 
-
   def engine
-    engine = @config["browser"]
+    engine = @config["browser"] ? @config["browser"] : "casperjs"
     # Legacy support for those using the old style "browser: \n phantomjs: 'casperjs'" configs
     engine = engine.values.first if engine.is_a? Hash
     engine
@@ -96,11 +96,16 @@ class Wraith::Wraith
   end
 
   def spider_file
-    @config["spider_file"] ? @config["spider_file"] : "spider.txt"
+    default = @config["spider_file"] ? @config["spider_file"] : "spider.txt"
+    if @config["project"].nil?
+      default
+    else
+      "spider/" + @config["project"] + ".txt"
+    end
   end
 
   def spider_days
-    @config["spider_days"]
+    @config["spider_days"] ? @config["spider_days"] : 10
   end
 
   def sitemap
@@ -116,27 +121,27 @@ class Wraith::Wraith
   end
 
   def fuzz
-    @config["fuzz"]
+    @config["fuzz"] ? @config["fuzz"] : "20%"
   end
 
   def highlight_color
-    @config["highlight_color"] ? @config["highlight_color"] : "blue"
+    @config["highlight_color"] ? @config["highlight_color"] : "red"
   end
 
   def mode
     if %w(diffs_only diffs_first alphanumeric).include?(@config["mode"])
       @config["mode"]
     else
-      "alphanumeric"
+      "diffs_first"
     end
   end
 
   def threshold
-    @config["threshold"] ? @config["threshold"] : 0
+    @config["threshold"] ? @config["threshold"] : 5
   end
 
   def gallery_template
-    default = 'basic_template'
+    default = 'advanced_template'
     if @config["gallery"].nil?
       default
     else
