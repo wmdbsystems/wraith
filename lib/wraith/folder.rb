@@ -31,8 +31,12 @@ class Wraith::FolderManager
   end
 
   def clear_shots_folder
-    FileUtils.rm_rf("./#{dir}")
-    FileUtils.mkdir_p("#{dir}")
+    if !dir.nil?
+      FileUtils.rm_rf("./#{dir}")
+      FileUtils.mkdir_p("#{dir}")
+    else
+      logger.error 'no `dir` found in config. Cannot delete folder.'
+    end
   end
 
   def copy_old_shots
