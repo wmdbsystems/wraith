@@ -24,6 +24,7 @@
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.cycle/3.03/jquery.cycle.all.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/unveil/1.3.0/jquery.unveil.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.7/jquery.slimscroll.min.js"></script>
   <script type="text/javascript" src="../../../assets/app.min.js"></script>
   <style type="text/css">
 
@@ -62,7 +63,7 @@
     }
 
     /* Slideshow */
-    .slideshow, .slide, .next, .prev {
+    .slideshow, .slide {
       height: 500px;
       overflow: hidden;
     }
@@ -70,24 +71,6 @@
       background-color: #FFF !important;
       width: 100% !important;
       margin: 0;
-    }
-    .next,
-    .prev {
-      cursor: pointer;
-      background-color: #f5f5f5;
-    }
-    .prev span:before,
-    .next span:before {
-      font-size: 40px;
-      display: block;
-      font-family: "FontAwesome";
-      margin-top: 173px;
-    }
-    .prev span:before {
-      content:"\f0d9";
-    }
-    .next span:before {
-      content:"\f0da";
     }
 
     /* Gallery */
@@ -169,11 +152,11 @@
       });
 
       // Thumbnail buttom
-      $('.shot').unbind().on('click', function(e){
-        e.preventDefault();
-        var url = $(this).attr('href');
-        window.open(url,'_blank');
-      });
+//      $('.shot').unbind().on('click', function(e){
+//        e.preventDefault();
+//        var url = $(this).attr('href');
+//        window.open(url,'_blank');
+//      });
 
       // Filter pages
       $('#pagesAll a').on('click', function(){
@@ -199,7 +182,7 @@
       $('[data-toggle="tooltip"]').tooltip();
 
 
-      // Bootstrap modal
+      // Compare modal
       $('#compareModal').on('show.bs.modal', function (event) {
         var $button = $(event.relatedTarget),
             $modal = $(this),
@@ -213,6 +196,17 @@
         $modal.find('.firstImage').attr('src', firstImage);
         $modal.find('.secondImage').attr('src', secondImage);
         $modal.find('.diffImage').attr('src', diffImage);
+      });
+
+      // Image modal
+      $('#imageModal').on('show.bs.modal', function (event) {
+        var $button = $(event.relatedTarget),
+            $modal = $(this);
+        var pageTitle = $button.data('page-title'); // Extract info from data-* attributes
+        var firstImage = $button.attr('href');
+
+        $modal.find('#imageModalLabel').text(pageTitle);
+        $modal.find('.firstImage').attr('src', firstImage);
       });
 
       // Affix
@@ -243,6 +237,13 @@
       });
 
       $(".box").activateBox();
+
+      $('.carousel').carousel();
+
+      window.setTimeout( function(){
+        $('.overlay').hide();
+      }, 1000 );
+
 
     });
 
@@ -306,26 +307,6 @@
           </button>
         </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-                <li class="divider"></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-        <!-- /.navbar-collapse -->
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
@@ -343,10 +324,6 @@
                   <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 200px;"><ul class="menu" style="overflow: hidden; width: 100%; height: 200px;">
                     <li><!-- start message -->
                       <a href="#">
-                        <div class="pull-left">
-                          <!-- User Image -->
-                          <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-                        </div>
                         <!-- Message title and timestamp -->
                         <h4>
                           Support Team
@@ -491,6 +468,9 @@
                 </dl>
               </div>
               <!-- /.box-body -->
+              <div class="overlay">
+                <i class="fa fa-refresh fa-spin"></i>
+              </div>
             </div>
           </div>
           <div class="col-md-6 col-sm-6">
@@ -619,10 +599,12 @@
 
           <!-- Sceenshot panels begin -->
           <div id="screenshot" class="hidden-xs hidden-sm col-md-6">
+
+
             <div class="box box-default">
               <div class="box-header with-border">
                 <i class="ion ion-images"></i>
-                <h3 class="box-title">Screenshot</h3>
+                <h3 class="box-title">Screenshots</h3>
                 <div class="box-tools pull-right">
                   <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                     <i class="fa fa-minus"></i>
@@ -633,9 +615,7 @@
                 <div class="container-fluid">
                   <div class="row">
 
-                    <div class="prev col-sm-1"><span></span></div>
-
-                    <div class="slideshow pull-left col-sm-10">
+                    <div class="slideshow pull-left col-sm-12">
                       <% directories.each do |dir, sizes| %>
                       <% sizes.to_a.sort.each do |size, files| %>
 
@@ -645,24 +625,26 @@
 
                         <div class="col-sm-12">
                           <h4>
-                            Status (<%=size%>px)
-                            <% if files[:data] > threshold %>
-                            <span class="label label-danger text-uppercase">Failed</span>
-                            <% else %>
-                            <% if files[:data] < threshold and files[:data] != 0 %>
-                            <span class="label label-warning text-uppercase">Warning</span>
-                            <% else %>
-                            <span class="label label-success text-uppercase">Passed</span>
-                            <% end %>
-                            <% end %>
-                            <span class="label label-default text-uppercase"><%=files[:data]%>% Change</span>
+                            Resolution: <small><%=size%>px</small>
+                            <div class="pull-right">
+                              <% if files[:data] > threshold %>
+                              <span class="label label-danger text-uppercase">Failed</span>
+                              <% else %>
+                              <% if files[:data] < threshold and files[:data] != 0 %>
+                              <span class="label label-warning text-uppercase">Warning</span>
+                              <% else %>
+                              <span class="label label-success text-uppercase">Passed</span>
+                              <% end %>
+                              <% end %>
+                              <span class="label label-default text-uppercase"><%=files[:data]%>% Change</span>
+                            </div>
                           </h4>
                           <br>
                         </div>
 
                         <% files[:variants].each do |file| %>
                         <div class="col-sm-4">
-                          <a class="shot thumbnail" href="<%=file[:filename]%>" title="<%=file[:name]%>">
+                          <a class="shot thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%= dir.gsub('__', '/') %>" href="<%=file[:filename]%>" title="<%=file[:name]%>">
                             <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="<%=path%><%=file[:thumb]%>" width="200" height="200" alt="" />
                           </a>
                           <p class="text-center"><a href="<%= domains['wmdb_' + file[:name]] %>/<%=dir.gsub('__', '/')%>/" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
@@ -670,7 +652,7 @@
                         <% end %>
                         <div class="col-sm-4">
                           <% if files[:diff] %>
-                          <a class="shot thumbnail" href="<%=files[:diff][:filename]%>" data-toggle="tooltip" data-placement="bottom" title="Difference">
+                          <a class="shot thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%= dir.gsub('__', '/') %>" href="<%=files[:diff][:filename]%>">
                             <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="<%=path%><%=files[:diff][:thumb]%>" width="200" height="200" alt="" />
                           </a>
                           <% end %>
@@ -678,10 +660,7 @@
 
                         <div class="col-sm-12">
                           <br>
-                          <div class="well well-sm">
-                            <a href="#<%=path%><%=dir%>"><i class="fa fa-link"></i> <%= dir.gsub('__', '/') %></a>
-                          </div>
-                          <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%= dir.gsub('__', '/') %>"><i class="ion ion-contrast"></i> Compare</button>
+                          <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%= dir.gsub('__', '/') %>"><i class="ion ion-contrast"></i> Compare</button>
                         </div>
 
                       </div>
@@ -689,14 +668,14 @@
                       <% end %>
                     </div>
 
-                    <div class="next col-sm-1"><span></span></div>
-
                   </div>
                 </div>
-
               </div>
               <div class="box-footer">
-                Footer
+                <div class="pull-right">
+                  <button type="button" class="btn btn-sm btn-default prev"><i class="ion ion-reply"></i> previous</button>
+                  <button type="button" class="btn btn-sm btn-default next"><i class="ion ion-forward"></i> next</button>
+                </div>
               </div>
           </div>
           <!-- Sceenshot panels end -->
@@ -741,6 +720,25 @@
               <img class="diffImage img-thumbnail" src="" alt=""/>
             </div>
           </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal end -->
+
+  <!-- Modal begin -->
+  <div id="imageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="imageModalLabel">Title</h4>
+        </div>
+        <div class="modal-body text-center">
+          <img class="firstImage img-thumbnail" src="" alt=""/>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
