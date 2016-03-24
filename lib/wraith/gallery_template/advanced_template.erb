@@ -551,7 +551,7 @@
                       <span class="pull-right badge bg-red"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=orig_url %> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+                      <span class="text"><%=files[:variants][0][:orig_url] %> <small>(<%=size%>px)</small></span>
                     </a>
                   </li>
                   <% else %>
@@ -561,7 +561,7 @@
                       <span class="pull-right badge bg-yellow"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=orig_url %> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+                      <span class="text"><%=files[:variants][0][:orig_url] %> <small>(<%=size%>px)</small></span>
                     </a>
                   </li>
                   <% else %>
@@ -570,7 +570,7 @@
                       <span class="pull-right badge bg-green"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=orig_url %> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+                      <span class="text"><%=files[:variants][0][:orig_url] %> <small>(<%=size%>px)</small></span>
                     </a>
                   </li>
                   <% end %>
@@ -623,22 +623,22 @@
 
                         <% files[:variants].each do |file| %>
                         <div class="col-sm-4">
-                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=dir.gsub('__', '/')%>" href="<%=file[:filename]%>" title="<%=file[:name]%>">
+                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=file[:orig_url]%>" href="<%=file[:filename]%>" title="<%=file[:name]%>">
                             <img class="lazy" src="" data-src="<%=path%><%=file[:thumb]%>" alt="" />
                           </a>
-                          <p class="text-center"><a href="<%=domains['wmdb_' + file[:name]]%><%=file[:orig_url] %>" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
+                          <p class="text-center"><a href="<%=domains['wmdb_' + file[:name]]%><%=file[:orig_url]%>" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
                         </div>
                         <% end %>
                         <div class="col-sm-4">
                           <% if files[:diff] %>
-                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=dir.gsub('__', '/')%>" href="<%=files[:diff][:filename]%>">
+                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=files[:variants][0][:orig_url]%>" href="<%=files[:diff][:filename]%>">
                             <img class="lazy" src="" data-src="<%=path%><%=files[:diff][:thumb]%>" alt="" />
                           </a>
                           <% end %>
                         </div>
                         <div class="col-sm-12">
                           <br>
-                          <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%=dir.gsub('__', '/')%>"><i class="ion ion-contrast"></i> Compare</button>
+                          <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%=files[:variants][0][:orig_url]%>"><i class="ion ion-contrast"></i> Compare</button>
                         </div>
                       </div>
                       <% end %>
