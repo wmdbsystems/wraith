@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Ghost // <%= location %></title>
+  <title>Ghost // <%=location%></title>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -18,7 +18,6 @@
   <link rel="stylesheet" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/AdminLTE.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="https://almsaeedstudio.com/themes/AdminLTE/dist/css/skins/_all-skins.min.css">
-
 
   <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -117,6 +116,12 @@
     .dl-horizontal{
       word-wrap: break-word;
     }
+    .modal {
+      z-index: 10050;
+    }
+    .modal-backdrop {
+      z-index: 10040;
+    }
     .modal-xl {
       width: auto;
       margin: 10px;
@@ -151,13 +156,6 @@
         $('.slideshow').cycle($('.slide.'+href+':first').index());
       });
 
-      // Thumbnail buttom
-//      $('.shot').unbind().on('click', function(e){
-//        e.preventDefault();
-//        var url = $(this).attr('href');
-//        window.open(url,'_blank');
-//      });
-
       // Filter pages
       $('#pagesAll a').on('click', function(){
         $('#page-list .list-group-item').show();
@@ -181,16 +179,15 @@
       // Activate tooltip
       $('[data-toggle="tooltip"]').tooltip();
 
-
       // Compare modal
       $('#compareModal').on('show.bs.modal', function (event) {
         var $button = $(event.relatedTarget),
             $modal = $(this),
             $slide = $button.closest('.slide');
         var pageTitle = $button.data('page-title'); // Extract info from data-* attributes
-        var firstImage = $slide.find('a.shot:eq(0)').attr('href'),
-            secondImage = $slide.find('a.shot:eq(1)').attr('href'),
-            diffImage = $slide.find('a.shot:eq(2)').attr('href');
+        var firstImage = $slide.find('a.thumbnail:eq(0)').attr('href'),
+            secondImage = $slide.find('a.thumbnail:eq(1)').attr('href'),
+            diffImage = $slide.find('a.thumbnail:eq(2)').attr('href');
 
         $modal.find('#compareModalLabel').text(pageTitle);
         $modal.find('.firstImage').attr('src', firstImage);
@@ -243,7 +240,6 @@
       window.setTimeout( function(){
         $('.overlay').hide();
       }, 1000 );
-
 
     });
 
@@ -416,7 +412,7 @@
     <section class="content-header">
       <h1>
         Project
-        <small><%= config['project'] %></small>
+        <small><%=config['project']%></small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -445,24 +441,24 @@
                 <dl class="dl-horizontal">
                   <dt>Domains</dt>
                   <% config['domains'].each do |domain| %>
-                  <dd><span class="text-muted"><%= domain[1] %></span></dd>
+                  <dd><span class="text-muted"><%=domain[1]%></span></dd>
                   <% end %>
                   <dt>Generated</dt>
-                  <dd><span class="text-muted"><%= Time.now.strftime('%Y/%m/%d %H:%M:%S') %></span></dd>
+                  <dd><span class="text-muted"><%=Time.now.strftime('%Y/%m/%d %H:%M:%S')%></span></dd>
                   <dt>Duration</dt>
                   <dd><span class="text-muted"><del>12.13 minutes</del></span></dd>
                   <dt>Threshold</dt>
-                  <dd><span class="text-muted"><%= threshold %>%</span></dd>
+                  <dd><span class="text-muted"><%=threshold%>%</span></dd>
                   <dt>Fuzz</dt>
-                  <dd><span class="text-muted"><%= fuzz %></span></dd>
+                  <dd><span class="text-muted"><%=fuzz%></span></dd>
                   <dt>Resolution</dt>
-                  <dd><span class="text-muted"><%= config['screen_widths'] %></span></dd>
+                  <dd><span class="text-muted"><%=config['screen_widths']%></span></dd>
                   <dt>Spider Skips</dt>
-                  <dd><span class="text-muted"><%= config['spider_skips'] ? config['spider_skips'] : '-' %></span></dd>
+                  <dd><span class="text-muted"><%=config['spider_skips'] ? config['spider_skips'] : '-'%></span></dd>
                   <dt>Before Capture</dt>
-                  <dd><span class="text-muted"><%= config['before_capture'] ? config['before_capture'] : '-' %></span></dd>
+                  <dd><span class="text-muted"><%=config['before_capture'] ? config['before_capture'] : '-'%></span></dd>
                   <dt>Engine</dt>
-                  <dd><span class="text-muted"><%= engine %></span></dd>
+                  <dd><span class="text-muted"><%=engine%></span></dd>
                   <dt>Status</dt>
                   <dd><span id="status" class="label <%=statusLabel%> text-uppercase"><%=statusText%></span></dd>
                 </dl>
@@ -478,39 +474,33 @@
               <span class="info-box-icon"><i class="fa fa-check"></i></span>
               <div class="info-box-content">
                 <span class="info-box-text">Passed</span>
-                <span class="info-box-number"><%= passedPagesCount %> / <%= totalPagesCount %></span>
+                <span class="info-box-number"><%=passedPagesCount%> / <%=totalPagesCount%></span>
                 <div class="progress">
-                  <div class="progress-bar" style="width: <%= percentPassed.round %>%"></div>
+                  <div class="progress-bar" style="width: <%=percentPassed.round%>%"></div>
                 </div>
-                <span class="progress-description">
-                  <%= percentPassed.round %>%
-                </span>
+                <span class="progress-description"><%=percentPassed.round%>%</span>
               </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
             <div class="info-box bg-yellow">
               <span class="info-box-icon"><i class="fa fa-exclamation"></i></span>
               <div class="info-box-content">
                 <span class="info-box-text">Warning</span>
-                <span class="info-box-number"><%= warningPagesCount %> / <%= totalPagesCount %></span>
+                <span class="info-box-number"><%=warningPagesCount%> / <%=totalPagesCount%></span>
                 <div class="progress">
-                  <div class="progress-bar" style="width: <%= percentWarning.round %>%"></div>
+                  <div class="progress-bar" style="width: <%=percentWarning.round%>%"></div>
                 </div>
-                <span class="progress-description">
-                  <%= percentWarning.round %>%
-                </span>
+                <span class="progress-description"><%=percentWarning.round%>%</span>
               </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
             <div class="info-box bg-red">
               <span class="info-box-icon"><i class="fa fa-bolt"></i></span>
               <div class="info-box-content">
                 <span class="info-box-text">Failed</span>
-                <span class="info-box-number"><%= failedPagesCount %> / <%= totalPagesCount %></span>
+                <span class="info-box-number"><%=failedPagesCount%> / <%=totalPagesCount%></span>
                 <div class="progress">
-                  <div class="progress-bar" style="width: <%= percentFailed.round %>%"></div>
+                  <div class="progress-bar" style="width: <%=percentFailed.round%>%"></div>
                 </div>
-                <span class="progress-description">
-                  <%= percentFailed.round %>%
-                </span>
+                <span class="progress-description"><%=percentFailed.round%>%</span>
               </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
           </div>
@@ -519,14 +509,14 @@
 
         <!-- Progress bar begin -->
         <div class="progress">
-          <div class="progress-bar progress-bar-success" style="width: <%= percentPassed %>%">
-            <span class="text-uppercase">Passed <%= percentPassed.round %>%</span>
+          <div class="progress-bar progress-bar-success" style="width: <%=percentPassed%>%">
+            <span class="text-uppercase">Passed <%=percentPassed.round%>%</span>
           </div>
-          <div class="progress-bar progress-bar-warning" style="width: <%= percentWarning %>%">
-            <span class="text-uppercase">Warning <%= percentWarning.round %>%</span>
+          <div class="progress-bar progress-bar-warning" style="width: <%=percentWarning%>%">
+            <span class="text-uppercase">Warning <%=percentWarning.round%>%</span>
           </div>
-          <div class="progress-bar progress-bar-danger" style="width: <%= percentFailed %>%">
-            <span class="text-uppercase">Failed <%= percentFailed.round %>%</span>
+          <div class="progress-bar progress-bar-danger" style="width: <%=percentFailed%>%">
+            <span class="text-uppercase">Failed <%=percentFailed.round%>%</span>
           </div>
         </div>
         <!-- Progress bar end -->
@@ -560,9 +550,8 @@
                     <a href="#<%=path%><%=dir%>">
                       <span class="pull-right badge bg-red"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
-                      <!--<span class="fa fa-bolt fa-fw" aria-hidden="true"></span>-->
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+                      <span class="text"><%=orig_url %> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
                     </a>
                   </li>
                   <% else %>
@@ -571,9 +560,8 @@
                     <a href="#<%=path%><%=dir%>">
                       <span class="pull-right badge bg-yellow"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
-                      <!--<span class="fa fa-exclamation fa-fw" aria-hidden="true"></span>-->
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+                      <span class="text"><%=orig_url %> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
                     </a>
                   </li>
                   <% else %>
@@ -581,14 +569,12 @@
                     <a href="#<%=path%><%=dir%>">
                       <span class="pull-right badge bg-green"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
-                      <!--<span class="fa fa-check fa-fw" aria-hidden="true"></span>-->
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
+                      <span class="text"><%=orig_url %> <%=dir.gsub('__', '/')%> <small>(<%=size%>px)</small></span>
                     </a>
                   </li>
                   <% end %>
                   <% end %>
-
                   <% end %>
                   <% end %>
                 </ul>
@@ -600,29 +586,22 @@
           <!-- Sceenshot panels begin -->
           <div id="screenshot" class="hidden-xs hidden-sm col-md-6">
 
-
             <div class="box box-default">
               <div class="box-header with-border">
                 <i class="ion ion-images"></i>
                 <h3 class="box-title">Screenshots</h3>
                 <div class="box-tools pull-right">
-                  <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                    <i class="fa fa-minus"></i>
-                  </button>
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
                 </div>
               </div>
               <div class="box-body">
                 <div class="container-fluid">
                   <div class="row">
-
                     <div class="slideshow pull-left col-sm-12">
                       <% directories.each do |dir, sizes| %>
                       <% sizes.to_a.sort.each do |size, files| %>
-
-                      <div class="row slide <%= dir %>">
-
-                        <a class="path" name="<%= dir %>"></a>
-
+                      <div class="row slide <%=dir%>">
+                        <a class="path" name="<%=dir%>"></a>
                         <div class="col-sm-12">
                           <h4>
                             Resolution: <small><%=size%>px</small>
@@ -644,30 +623,27 @@
 
                         <% files[:variants].each do |file| %>
                         <div class="col-sm-4">
-                          <a class="shot thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%= dir.gsub('__', '/') %>" href="<%=file[:filename]%>" title="<%=file[:name]%>">
-                            <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="<%=path%><%=file[:thumb]%>" width="200" height="200" alt="" />
+                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=dir.gsub('__', '/')%>" href="<%=file[:filename]%>" title="<%=file[:name]%>">
+                            <img class="lazy" src="" data-src="<%=path%><%=file[:thumb]%>" alt="" />
                           </a>
-                          <p class="text-center"><a href="<%= domains['wmdb_' + file[:name]] %>/<%=dir.gsub('__', '/')%>/" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
+                          <p class="text-center"><a href="<%=domains['wmdb_' + file[:name]]%><%=file[:orig_url] %>" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
                         </div>
                         <% end %>
                         <div class="col-sm-4">
                           <% if files[:diff] %>
-                          <a class="shot thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%= dir.gsub('__', '/') %>" href="<%=files[:diff][:filename]%>">
-                            <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="<%=path%><%=files[:diff][:thumb]%>" width="200" height="200" alt="" />
+                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=dir.gsub('__', '/')%>" href="<%=files[:diff][:filename]%>">
+                            <img class="lazy" src="" data-src="<%=path%><%=files[:diff][:thumb]%>" alt="" />
                           </a>
                           <% end %>
                         </div>
-
                         <div class="col-sm-12">
                           <br>
-                          <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%= dir.gsub('__', '/') %>"><i class="ion ion-contrast"></i> Compare</button>
+                          <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#compareModal" data-page-title="<%=dir.gsub('__', '/')%>"><i class="ion ion-contrast"></i> Compare</button>
                         </div>
-
                       </div>
                       <% end %>
                       <% end %>
                     </div>
-
                   </div>
                 </div>
               </div>

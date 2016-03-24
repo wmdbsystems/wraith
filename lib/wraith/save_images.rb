@@ -36,23 +36,23 @@ class Wraith::SaveImages
       settings = CaptureOptions.new(options, wraith)
 
       if settings.resize
-        jobs = jobs + define_individual_job(label, settings, wraith.widths)
+        jobs = jobs + define_individual_job(label, settings, wraith.widths, options)
       else
         wraith.widths.each do |width|
-          jobs = jobs + define_individual_job(label, settings, width)
+          jobs = jobs + define_individual_job(label, settings, width, options)
         end
       end
     end
     jobs
   end
 
-  def define_individual_job(label, settings, width)
+  def define_individual_job(label, settings, width, options)
     base_file_name    = meta.file_names(width, label, meta.base_label)
     compare_file_name = meta.file_names(width, label, meta.compare_label)
 
     jobs = []
-    jobs << [label, settings.path, prepare_widths_for_cli(width), settings.base_url,    base_file_name,    settings.selector, wraith.before_capture, settings.before_capture]
-    jobs << [label, settings.path, prepare_widths_for_cli(width), settings.compare_url, compare_file_name, settings.selector, wraith.before_capture, settings.before_capture] unless settings.compare_url.nil?
+    jobs << [label, settings.path, prepare_widths_for_cli(width), settings.base_url,    base_file_name,    settings.selector, wraith.before_capture, settings.before_capture, options]
+    jobs << [label, settings.path, prepare_widths_for_cli(width), settings.compare_url, compare_file_name, settings.selector, wraith.before_capture, settings.before_capture, options] unless settings.compare_url.nil?
 
     jobs
   end
@@ -73,15 +73,22 @@ class Wraith::SaveImages
   end
 
   def parallel_task(jobs)
-    Parallel.each(jobs, :in_threads => 8) do |_label, _path, width, url, filename, selector, global_before_capture, path_before_capture|
+    Parallel.each(jobs, :in_threads => 8) do |_label, _path, width, url, filename, selector, global_before_capture, path_before_capture, options|
       begin
         command = construct_command(width, url, filename, selector, global_before_capture, path_before_capture)
         attempt_image_capture(command, filename)
+        write_original_url_to_file(File.dirname(filename), options)
       rescue => e
         logger.error e
         create_invalid_image(filename, width)
       end
     end
+  end
+
+  def write_original_url_to_file(directory, options)
+    orig_url_file = directory + '/url.txt'
+    # logger.info "Write " + options + " to " + orig_url
+    File.open(orig_url_file, "w") { |file| file.write(options) }
   end
 
   def construct_command(width, url, file_name, selector, global_before_capture, path_before_capture)

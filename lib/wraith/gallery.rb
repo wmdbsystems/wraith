@@ -51,6 +51,7 @@ class Wraith::GalleryGenerator
     @filepath = category + "/" + filename
     @thumbnail = "thumbnails/#{category}/#{filename}"
     @url = figure_out_url @group, category
+    @orig_url = url_check(@location + '/' + category)
 
     if @dirs[category][@size].nil?
       @dirs[category][@size] = { :variants => [] }
@@ -96,7 +97,8 @@ class Wraith::GalleryGenerator
       :name     => group,
       :filename => @filepath,
       :thumb    => @thumbnail,
-      :url      => @url
+      :url      => @url,
+      :orig_url => @orig_url
     }
     size_dict[:variants].sort! { |a, b| a[:name] <=> b[:name] }
   end
@@ -109,6 +111,10 @@ class Wraith::GalleryGenerator
 
   def data_check(size_dict, dirname, filepath)
     size_dict[:data] = File.read("#{dirname}/#{filepath}").to_f
+  end
+
+  def url_check(dirname)
+    File.read("#{dirname}/url.txt").to_s
   end
 
   def sorting_dirs(dirs)
