@@ -43,7 +43,7 @@ class Wraith::Spider
   end
 
   def add_path(path)
-    @paths[path == "/" ? "home" : path.gsub("/", "__").gsub("?", "__").gsub("=", "__").gsub(".", "__").gsub("&", "__").gsub("%", "__").gsub("$", "__").chomp("__").downcase] = path.downcase
+    @paths[path == "/" ? "home" : path.gsub("/", "__").gsub("?", "__").gsub("=", "__").gsub(".", "__").gsub("&", "__").gsub("%", "__").gsub("$", "__").chomp("__").downcase] = path
   end
 
   def spider
