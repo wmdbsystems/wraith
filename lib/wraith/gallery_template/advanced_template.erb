@@ -136,6 +136,10 @@
       margin: 10px;
     }
 
+    a.thumbnail {
+      cursor: pointer;
+    }
+
   </style>
   <script type="text/javascript">
     $(function() {
@@ -194,9 +198,9 @@
             $modal = $(this),
             $slide = $button.closest('.slide');
         var pageTitle = $button.data('page-title'); // Extract info from data-* attributes
-        var firstImage = $slide.find('a.thumbnail:eq(0)').attr('href'),
-            secondImage = $slide.find('a.thumbnail:eq(1)').attr('href'),
-            diffImage = $slide.find('a.thumbnail:eq(2)').attr('href');
+        var firstImage = $slide.find('a.thumbnail:eq(0)').attr('data-href'),
+            secondImage = $slide.find('a.thumbnail:eq(1)').attr('data-href'),
+            diffImage = $slide.find('a.thumbnail:eq(2)').attr('data-href');
 
         $modal.find('#compareModalLabel').text(pageTitle);
         $modal.find('.firstImage').attr('src', firstImage);
@@ -209,7 +213,7 @@
         var $button = $(event.relatedTarget),
             $modal = $(this);
         var pageTitle = $button.data('page-title'); // Extract info from data-* attributes
-        var firstImage = $button.attr('href');
+        var firstImage = $button.data('href');
 
         $modal.find('#imageModalLabel').text(pageTitle);
         $modal.find('.firstImage').attr('src', firstImage);
@@ -632,7 +636,7 @@
 
                         <% files[:variants].each do |file| %>
                         <div class="col-sm-4">
-                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=file[:orig_url]%>" href="<%=file[:filename]%>" title="<%=file[:name]%>">
+                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=file[:orig_url]%>" data-href="<%=file[:filename]%>" title="<%=file[:name]%>">
                             <img class="lazy" src="" data-src="<%=path%><%=file[:thumb]%>" alt="" />
                           </a>
                           <p class="text-center"><a href="<%=domains['wmdb_' + file[:name]]%><%=file[:orig_url]%>" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
@@ -640,7 +644,7 @@
                         <% end %>
                         <div class="col-sm-4">
                           <% if files[:diff] %>
-                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=files[:variants][0][:orig_url]%>" href="<%=files[:diff][:filename]%>">
+                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=files[:variants][0][:orig_url]%>" data-href="<%=files[:diff][:filename]%>">
                             <img class="lazy" src="" data-src="<%=path%><%=files[:diff][:thumb]%>" alt="" />
                           </a>
                           <% end %>
@@ -696,13 +700,13 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-4">
-              <img class="firstImage img-thumbnail" src="" alt=""/>
+              <img class="firstImage img-thumbnail" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/>
             </div>
             <div class="col-sm-4">
-              <img class="secondImage img-thumbnail" src="" alt=""/>
+              <img class="secondImage img-thumbnail" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/>
             </div>
             <div class="col-sm-4">
-              <img class="diffImage img-thumbnail" src="" alt=""/>
+              <img class="diffImage img-thumbnail" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/>
             </div>
           </div>
         </div>
@@ -723,7 +727,7 @@
           <h4 class="modal-title" id="imageModalLabel">Title</h4>
         </div>
         <div class="modal-body text-center">
-          <img class="firstImage img-thumbnail" src="" alt=""/>
+          <img class="firstImage img-thumbnail" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
