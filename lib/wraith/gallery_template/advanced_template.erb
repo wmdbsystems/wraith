@@ -194,14 +194,19 @@
             $modal = $(this),
             $slide = $button.closest('.slide');
         var pageTitle = $button.data('page-title'); // Extract info from data-* attributes
-        var firstImage = $slide.find('a.thumbnail:eq(0)').attr('href'),
-            secondImage = $slide.find('a.thumbnail:eq(1)').attr('href'),
-            diffImage = $slide.find('a.thumbnail:eq(2)').attr('href');
+        var firstImage = $slide.find('a.thumbnail:eq(0)').attr('data-href'),
+            secondImage = $slide.find('a.thumbnail:eq(1)').attr('data-href'),
+            diffImage = $slide.find('a.thumbnail:eq(2)').attr('data-href');
+        var firstImageUrl = $slide.find('a.thumbnail:eq(0)').next().find('a').attr('href'),
+            secondImageUrl = $slide.find('a.thumbnail:eq(1)').next().find('a').attr('href');
 
         $modal.find('#compareModalLabel').text(pageTitle);
         $modal.find('.firstImage').attr('src', firstImage);
         $modal.find('.secondImage').attr('src', secondImage);
         $modal.find('.diffImage').attr('src', diffImage);
+
+        $modal.find('.firstImage').parent().attr('href', firstImageUrl);
+        $modal.find('.secondImage').parent().attr('href', secondImageUrl);
       });
 
       // Image modal
@@ -209,10 +214,12 @@
         var $button = $(event.relatedTarget),
             $modal = $(this);
         var pageTitle = $button.data('page-title'); // Extract info from data-* attributes
-        var firstImage = $button.attr('href');
+        var firstImage = $button.data('href'),
+            firstImageUrl = $button.next().find('a').attr('href');
 
         $modal.find('#imageModalLabel').text(pageTitle);
         $modal.find('.firstImage').attr('src', firstImage);
+        $modal.find('.firstImage').parent().attr('href', firstImageUrl);
       });
 
       // Affix
@@ -676,7 +683,7 @@
     <!-- Footer section begin -->
     <footer id="footerSection" class="main-footer">
       <div class="pull-right hidden-xs">
-        <b>Version</b> 2.3.1
+        <b>Version</b> <del>2.3.1</del>
       </div>
       <strong>Copyright © 2016 <i class="ion ion-social-snapchat-outline"></i> WMDB Ghost</strong> All rights reserved.
     </footer>
@@ -696,10 +703,10 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-4">
-              <img class="firstImage img-thumbnail" src="" alt=""/>
+              <a href="#" class="thumbnail" target="_blank"><img class="firstImage" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/></a>
             </div>
             <div class="col-sm-4">
-              <img class="secondImage img-thumbnail" src="" alt=""/>
+              <a href="#" class="thumbnail" target="_blank"><img class="secondImage" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/></a>
             </div>
             <div class="col-sm-4">
               <img class="diffImage img-thumbnail" src="" alt=""/>
@@ -723,7 +730,7 @@
           <h4 class="modal-title" id="imageModalLabel">Title</h4>
         </div>
         <div class="modal-body text-center">
-          <img class="firstImage img-thumbnail" src="" alt=""/>
+          <a href="#" class="thumbnail" target="_blank"><img class="firstImage" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/></a>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
