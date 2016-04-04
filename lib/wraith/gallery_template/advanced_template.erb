@@ -136,6 +136,10 @@
       margin: 10px;
     }
 
+    a.thumbnail {
+      cursor: pointer;
+    }
+
   </style>
   <script type="text/javascript">
     $(function() {
@@ -639,7 +643,7 @@
 
                         <% files[:variants].each do |file| %>
                         <div class="col-sm-4">
-                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=file[:orig_url]%>" href="<%=file[:filename]%>" title="<%=file[:name]%>">
+                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=file[:orig_url]%>" data-href="<%=file[:filename]%>" title="<%=file[:name]%>">
                             <img class="lazy" src="" data-src="<%=path%><%=file[:thumb]%>" alt="" />
                           </a>
                           <p class="text-center"><a href="<%=domains['wmdb_' + file[:name]]%><%=file[:orig_url]%>" target="_blank"><i class="fa fa-external-link" data-toggle="tooltip" data-placement="right" title="<%=file[:name]%>"></i></a></p>
@@ -647,7 +651,7 @@
                         <% end %>
                         <div class="col-sm-4">
                           <% if files[:diff] %>
-                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=files[:variants][0][:orig_url]%>" href="<%=files[:diff][:filename]%>">
+                          <a class="thumbnail" data-toggle="modal" data-target="#imageModal" data-page-title="<%=files[:variants][0][:orig_url]%>" data-href="<%=files[:diff][:filename]%>">
                             <img class="lazy" src="" data-src="<%=path%><%=files[:diff][:thumb]%>" alt="" />
                           </a>
                           <% end %>
@@ -709,7 +713,7 @@
               <a href="#" class="thumbnail" target="_blank"><img class="secondImage" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/></a>
             </div>
             <div class="col-sm-4">
-              <img class="diffImage img-thumbnail" src="" alt=""/>
+              <img class="diffImage img-thumbnail" src="https://vagrant.wmdb.de/ghost/img/placeholder.png" alt=""/>
             </div>
           </div>
         </div>
