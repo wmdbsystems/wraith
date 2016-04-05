@@ -179,10 +179,12 @@
           case 37:
           case 38:
             $('.slideshow').cycle('prev');
+            return false;
             break;
           case 39:
           case 40:
             $('.slideshow').cycle('next');
+            return false;
             break;
         }
       });
@@ -314,6 +316,17 @@
         $('.overlay').hide();
       }, 1000 );
 
+
+      // Hash URL
+      var hash = $(location).attr('hash');
+      if (hash !== "") {
+        var hashElement = "#page-list a[href^='" + hash +  "']";
+        $(hashElement).click();
+
+        $('html, body').animate({
+          scrollTop:$(hashElement).offset().top -120
+        },'slow');
+      }
     });
 
   </script>
