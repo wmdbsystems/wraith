@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Ghost // <%=location%></title>
+  <title>Ghost // <%=config['project']%></title>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -48,6 +48,8 @@
       vertical-align: bottom;
       overflow: hidden;
       white-space: nowrap;
+      font-weight: bold;
+      margin-left: 5px;
     }
 
     .checked .check-mark:after {
@@ -158,9 +160,31 @@
               $(this).addClass('checked');
               $(this).parent().addClass('active');
             }
-          })
+          });
+          var $slide = ($(this)),
+              $modal = $('#compareModal'),
+              elements = getElementsFromSlider($slide);
+
+          renderCompareModal($modal, elements);
+
         },
         timeout: 0
+      });
+
+      // Keys
+      $(window).keydown(function(event){
+        switch (event.keyCode) {
+          case 32:
+            break;
+          case 37:
+          case 38:
+            $('.slideshow').cycle('prev');
+            break;
+          case 39:
+          case 40:
+            $('.slideshow').cycle('next');
+            break;
+        }
       });
 
       // Page list
@@ -192,25 +216,54 @@
       // Activate tooltip
       $('[data-toggle="tooltip"]').tooltip();
 
+
+      /**
+       * renderCompareModal
+       *
+       * @param $modal
+       * @param elements
+       */
+      function renderCompareModal($modal, elements) {
+        $modal.find('#compareModalLabel span:first').text(elements['pageTitle']);
+        $modal.find('#compareModalLabel span:last').text(elements['resolution']);
+        $modal.find('.firstImage').attr('src', elements['firstImage']);
+        $modal.find('.secondImage').attr('src', elements['secondImage']);
+        $modal.find('.diffImage').attr('src', elements['diffImage']);
+        $modal.find('.firstImage').parent().attr('href', elements['firstImageUrl']);
+        $modal.find('.secondImage').parent().attr('href', elements['secondImageUrl']);
+      }
+
+      /**
+       * getElementsFromSlider
+       *
+       * @param $slide
+       * @returns {Array}
+       */
+      function getElementsFromSlider($slide) {
+
+        var elements = [];
+
+        elements['pageTitle'] = $slide.find('button').data('page-title');
+        elements['resolution'] = $slide.find('h4>small>span').text();
+        elements['firstImage'] = $slide.find('a.thumbnail:eq(0)').attr('data-href');
+        elements['secondImage'] = $slide.find('a.thumbnail:eq(1)').attr('data-href');
+        elements['diffImage'] = $slide.find('a.thumbnail:eq(2)').attr('data-href');
+        elements['firstImageUrl'] = $slide.find('a.thumbnail:eq(0)').next().find('a').attr('href');
+        elements['secondImageUrl'] = $slide.find('a.thumbnail:eq(1)').next().find('a').attr('href');
+
+        return elements;
+
+      }
+
       // Compare modal
       $('#compareModal').on('show.bs.modal', function (event) {
         var $button = $(event.relatedTarget),
             $modal = $(this),
-            $slide = $button.closest('.slide');
-        var pageTitle = $button.data('page-title'); // Extract info from data-* attributes
-        var firstImage = $slide.find('a.thumbnail:eq(0)').attr('data-href'),
-            secondImage = $slide.find('a.thumbnail:eq(1)').attr('data-href'),
-            diffImage = $slide.find('a.thumbnail:eq(2)').attr('data-href');
-        var firstImageUrl = $slide.find('a.thumbnail:eq(0)').next().find('a').attr('href'),
-            secondImageUrl = $slide.find('a.thumbnail:eq(1)').next().find('a').attr('href');
+            $slide = $button.closest('.slide'),
+            elements = getElementsFromSlider($slide);
 
-        $modal.find('#compareModalLabel').text(pageTitle);
-        $modal.find('.firstImage').attr('src', firstImage);
-        $modal.find('.secondImage').attr('src', secondImage);
-        $modal.find('.diffImage').attr('src', diffImage);
+        renderCompareModal($modal, elements);
 
-        $modal.find('.firstImage').parent().attr('href', firstImageUrl);
-        $modal.find('.secondImage').parent().attr('href', secondImageUrl);
       });
 
       // Image modal
@@ -567,30 +620,33 @@
                   <% sizes.to_a.sort.each do |size, files| %>
                   <% if files[:data] > threshold %>
                   <li>
-                    <a href="#<%=path%><%=dir%>">
+                    <a href="#<%=path%><%=dir%>_<%=size%>">
                       <span class="pull-right badge bg-red"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=files[:variants][0][:orig_url] %> <small>(<%=size%>px)</small></span>
+                      <span class="label label-default"><%=size%>px</span>
+                      <span class="text"><%=files[:variants][0][:orig_url] %></span>
                     </a>
                   </li>
                   <% else %>
                   <% if files[:data] < threshold and files[:data] != 0 %>
                   <li>
-                    <a href="#<%=path%><%=dir%>">
+                    <a href="#<%=path%><%=dir%>_<%=size%>">
                       <span class="pull-right badge bg-yellow"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=files[:variants][0][:orig_url] %> <small>(<%=size%>px)</small></span>
+                      <span class="label label-default"><%=size%>px</span>
+                      <span class="text"><%=files[:variants][0][:orig_url] %></span>
                     </a>
                   </li>
                   <% else %>
                   <li>
-                    <a href="#<%=path%><%=dir%>">
+                    <a href="#<%=path%><%=dir%>_<%=size%>">
                       <span class="pull-right badge bg-green"><%=files[:data].ceil%>%</span>
                       <span class="check-mark"></span>
                       <input type="checkbox" value="" name="">
-                      <span class="text"><%=files[:variants][0][:orig_url] %> <small>(<%=size%>px)</small></span>
+                      <span class="label label-default"><%=size%>px</span>
+                      <span class="text"><%=files[:variants][0][:orig_url] %></span>
                     </a>
                   </li>
                   <% end %>
@@ -620,11 +676,11 @@
                     <div class="slideshow pull-left col-sm-12">
                       <% directories.each do |dir, sizes| %>
                       <% sizes.to_a.sort.each do |size, files| %>
-                      <div class="row slide <%=dir%>">
-                        <a class="path" name="<%=dir%>"></a>
+                      <div class="row slide <%=dir%>_<%=size%>">
+                        <a class="path" name="<%=dir%>_<%=size%>"></a>
                         <div class="col-sm-12">
                           <h4>
-                            Resolution: <small><%=size%>px</small>
+                            Resolution: <small><span class="label label-default"><%=size%>px</span></small>
                             <div class="pull-right">
                               <% if files[:data] > threshold %>
                               <span class="label label-danger text-uppercase">Failed</span>
@@ -702,7 +758,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="compareModalLabel">Title</h4>
+          <h4 class="modal-title" id="compareModalLabel"><span>Title</span> <span class="label label-default">1280px</span></h4>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -718,6 +774,8 @@
           </div>
         </div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-default prev"><i class="ion ion-reply"></i> previous</button>
+          <button type="button" class="btn btn-default next"><i class="ion ion-forward"></i> next</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
         </div>
       </div>
