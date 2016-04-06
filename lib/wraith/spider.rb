@@ -40,7 +40,7 @@ class Wraith::Spider
   private
 
   def write_file
-    File.open(wraith.spider_file, "w+") { |file| file.write(@paths) }
+    File.open(@wraith.spider_file, "w+") { |file| file.write(@paths) }
   end
 
   def add_path(path)
@@ -61,9 +61,9 @@ class Wraith::Crawler < Wraith::Spider
            m3u f4v pdf doc xls ppt pps bin exe rss xml)
 
   def spider
-    if File.exist?(wraith.spider_file) && modified_since(wraith.spider_file, wraith.spider_days[0])
-      logger.info "using existing spider file"
-      @paths = eval(File.read(wraith.spider_file))
+    if File.exist?(@wraith.spider_file) && modified_since(@wraith.spider_file, @wraith.spider_days)
+        logger.info "using existing spider file"
+      @paths = eval(File.read(@wraith.spider_file))
     else
       logger.info "creating new spider file"
       Anemone.crawl(wraith.base_domain) do |anemone|
