@@ -66,10 +66,10 @@ class Wraith::Crawler < Wraith::Spider
       @paths = eval(File.read(@wraith.spider_file))
     else
       logger.info "creating new spider file"
-      Anemone.crawl(wraith.base_domain) do |anemone|
+      Anemone.crawl(@wraith.base_domain) do |anemone|
         anemone.skip_links_like(/\.(#{EXT.join('|')})$/)
         # Add user specified skips
-        anemone.skip_links_like(wraith.spider_skips)
+        anemone.skip_links_like(@wraith.spider_skips)
         anemone.on_every_page { |page| add_path(page.url.path) }
       end
     end
