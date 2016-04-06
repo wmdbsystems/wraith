@@ -53,9 +53,7 @@ class Wraith::GalleryGenerator
     @url = figure_out_url @group, category
     @orig_url = url_check(@location + '/' + category)
 
-    if @dirs[category][@size].nil?
-      @dirs[category][@size] = { :variants => [] }
-    end
+    @dirs[category][@size] = { :variants => [] } if @dirs[category][@size].nil?
 
     size_dict = @dirs[category][@size]
 
@@ -64,20 +62,20 @@ class Wraith::GalleryGenerator
 
   def figure_out_url(group, category)
     root = wraith.domains["#{group}"]
-    return '' if root.nil?
+    return "" if root.nil?
     path = get_path(category)
     url  = root + path
     url
   end
 
   def get_path(category)
-    wraith.paths[category]['path'] || wraith.paths[category]
+    wraith.paths[category]["path"] || wraith.paths[category]
   end
 
   def get_group_from_match(match)
     group = match[2]
-    dash = match[2].rindex('-')
-    group = match[2][dash+1..-1] unless dash.nil?
+    dash = match[2].rindex("-")
+    group = match[2][dash + 1..-1] unless dash.nil?
     group
   end
 
@@ -170,7 +168,7 @@ class Wraith::GalleryGenerator
 
       @dirs.each do |dir, sizes|
         sizes.to_a.sort.each do |size, files|
-          file = dir.gsub('__', '/')
+          file = dir.gsub("__", "/")
           if !files.include?(:diff)
             logger.warn "\t Unable to create a diff image for #{file}"
           elsif files[:data] > wraith.threshold
@@ -187,7 +185,7 @@ class Wraith::GalleryGenerator
 
   def prompt_user_to_open_gallery(dest)
     logger.info "\nView the gallery in your browser:"
-    logger.info "\t file://" + Dir.pwd + '/' + dest
+    logger.info "\t file://" + Dir.pwd + "/" + dest
   end
 
   class ErbBinding < OpenStruct
