@@ -3,6 +3,7 @@ require "pp"
 require "fileutils"
 require "wraith/wraith"
 require "wraith/helpers/logger"
+require "json"
 
 class Wraith::GalleryGenerator
   include Logging
@@ -126,10 +127,12 @@ class Wraith::GalleryGenerator
 
   def generate_gallery(with_path = "")
     dest = "#{@location}/gallery.html"
+    dest_json = "#{@location}/gallery.json"
     directories = parse_directories(@location)
 
     template = File.expand_path("gallery_template/#{wraith.gallery_template}.erb", File.dirname(__FILE__))
     generate_html(@location, directories, template, dest, with_path)
+    generate_json(@location, directories, dest_json, with_path)
 
     report_gallery_status dest
   end
@@ -150,6 +153,23 @@ class Wraith::GalleryGenerator
     html = ERB.new(template).result(ErbBinding.new(locals).get_binding)
     File.open(destination, "w") do |outf|
       outf.write(html)
+    end
+  end
+
+  def generate_json(location, directories, destination, path)
+    locals = {
+        :location    => location,
+        :directories => directories,
+        :path        => path,
+        :threshold   => wraith.threshold,
+        :engine      => wraith.engine,
+        :fuzz        => wraith.fuzz,
+        :config      => wraith.config
+    }
+    # json = locals.to_json
+    json = locals.to_json
+    File.open(destination, "w") do |outf|
+      outf.write(json)
     end
   end
 
