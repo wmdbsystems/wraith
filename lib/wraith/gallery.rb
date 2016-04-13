@@ -127,7 +127,7 @@ class Wraith::GalleryGenerator
 
   def generate_gallery(with_path = "")
     dest = "#{@location}/gallery.html"
-    dest_json = "#{@location}/gallery.json"
+    dest_json = "#{@location}/wraith-data.json"
     directories = parse_directories(@location)
 
     template = File.expand_path("gallery_template/#{wraith.gallery_template}.erb", File.dirname(__FILE__))
