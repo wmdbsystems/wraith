@@ -84,20 +84,20 @@ class Wraith::Sitemap < Wraith::Spider
   include Logging
 
   def spider
-    unless wraith.sitemap.nil?
-      logger.info "reading sitemap.xml from #{wraith.sitemap}"
-      if wraith.sitemap =~ URI.regexp
-        sitemap = Nokogiri::XML(open(wraith.sitemap))
+    unless @wraith.sitemap.nil?
+      logger.info "reading sitemap.xml from #{@wraith.sitemap}"
+      if @wraith.sitemap =~ URI.regexp
+        sitemap = Nokogiri::XML(open(@wraith.sitemap))
       else
-        sitemap = Nokogiri::XML(File.open(wraith.sitemap))
+        sitemap = Nokogiri::XML(File.open(@wraith.sitemap))
       end
       sitemap.css("loc").each do |loc|
         path = loc.content
         # Allow use of either domain in the sitemap.xml
-        wraith.domains.each do |_k, v|
+        @wraith.domains.each do |_k, v|
           path.sub!(v, "")
         end
-        if wraith.spider_skips.nil? || wraith.spider_skips.none? { |regex| regex.match(path) }
+        if @wraith.spider_skips.nil? || @wraith.spider_skips.none? { |regex| regex.match(path) }
           add_path(path)
         end
       end
