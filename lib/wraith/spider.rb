@@ -70,7 +70,10 @@ class Wraith::Crawler < Wraith::Spider
         anemone.skip_links_like(/\.(#{EXT.join('|')})$/)
         # Add user specified skips
         anemone.skip_links_like(@wraith.spider_skips)
-        anemone.on_every_page { |page| add_path(page.url.path) }
+        anemone.on_every_page {
+            |page| add_path(page.url.path)
+            logger.info "Crawling: " + page.url.path
+        }
       end
     end
   end
