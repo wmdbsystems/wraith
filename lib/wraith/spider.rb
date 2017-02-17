@@ -58,7 +58,8 @@ class Wraith::Crawler < Wraith::Spider
            gz jar js css dtd xsd ico raw mp3 mp4 \
            wav wmv ape aac ac3 wma aiff mpg mpeg \
            avi mov ogg mkv mka asx asf mp2 m1v \
-           m3u f4v pdf doc xls ppt pps bin exe rss xml)
+           m3u f4v pdf doc xls ppt pps bin exe \
+           rss xml rtf)
 
   def spider
     if File.exist?(@wraith.spider_file) && modified_since(@wraith.spider_file, @wraith.spider_days)
