@@ -34,6 +34,7 @@ class Wraith::FolderManager
     if !dir.nil?
       FileUtils.rm_rf("./#{dir}")
       FileUtils.mkdir_p("#{dir}")
+      FileUtils.touch("#{dir}/.capture-start")
     else
       logger.error 'no `dir` found in config. Cannot delete folder.'
     end
